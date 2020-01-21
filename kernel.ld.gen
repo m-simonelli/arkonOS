@@ -1,0 +1,24 @@
+/* this is passed to the preprocessor to handle defines */
+#include "kernel_inc.gen"
+OUTPUT_FORMAT(KERN_OFORMAT)
+
+SECTIONS {
+    kernel_vaddr = KERN_VADDR;
+    . = KERN_LOAD_ADDR + KERN_VADDR;
+    .text ALIGN(4K) : {
+      KEEP(*(.entry))
+      *(.text*)
+    }
+    .data ALIGN(4K) : {
+      *(.data*)
+    }
+    .rodata ALIGN(4K) : {
+      *(.rodata*)
+    }
+    .bss ALIGN(4K) : {
+      bss_begin = .;
+      *(COMMON)
+      *(.bss*)
+      bss_end = .;
+    }
+}
