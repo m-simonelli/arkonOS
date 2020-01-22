@@ -53,7 +53,8 @@ KERN_QEMU_DEBUG_PORT_ENABLED=1
 
 #virtual address where the kernel will be loaded
 #please god please don't change this
-#if you do you have to manually change page tables
+#if you do you have to manually change page tables init
+#to reflect the changes
 KERN_VIRT_ADDR=0xFFFFFFFFC0000000
 
 KERN_SECTOR_COUNT=wc -c < kernel.bin | awk '{printf("%.0f\n", ($$1+511)/512+1)}'
@@ -88,7 +89,7 @@ KERN_ASM_SOURCES= 	$(KERN_SOURCE_DIR)/arch/x86_64/start.asm	\
 KERN_OBJECTS= 	${KERN_ASM_SOURCES:.asm=.o}	\
 				${KERN_C_SOURCES:.c=.o}
 
-OS_IMAGE_NAME=os-image
+OS_IMAGE_NAME=arkon
 
 CC_INCLUDE_DIRS=kernel/include/
 CC_FLAGS=-I$(CC_INCLUDE_DIRS) -Wall -Wextra -g
