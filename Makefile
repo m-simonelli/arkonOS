@@ -201,8 +201,7 @@ run: $(OS_IMAGE_NAME).bin
 	qemu-system-x86_64 $(QEMU_OPTIONS) -fda $(OS_IMAGE_NAME).bin
 
 debug-gdb: $(OS_IMAGE_NAME).bin kernel.elf
-	QEMU_OPTIONS+= -s -S
-	qemu-system-x86_64 $(QEMU_OPTIONS) -fda $(OS_IMAGE_NAME).bin &
+	qemu-system-x86_64 $(QEMU_OPTIONS) -s -S -fda $(OS_IMAGE_NAME).bin &
 	$(GDB) -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 crun: clean run
