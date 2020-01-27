@@ -60,39 +60,48 @@ KERN_VIRT_ADDR=0xFFFFFFFFC0000000
 KERN_SECTOR_COUNT=wc -c < kernel.bin | awk '{printf("%.0f\n", ($$1+511)/512+1)}'
 
 KERN_INCLUDE_DIR=kernel/include
-KERN_HEADERS=	$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
-				$(KERN_INCLUDE_DIR)/drivers/vga/vga.h		\
-				$(KERN_INCLUDE_DIR)/drivers/serial/uart.h	\
-				$(KERN_INCLUDE_DIR)/drivers/serial/serial.h	\
-				$(KERN_INCLUDE_DIR)/inttypes.h				\
-				$(KERN_INCLUDE_DIR)/mem/memcpy.h			\
-				$(KERN_INCLUDE_DIR)/mem/memswp.h			\
-				$(KERN_INCLUDE_DIR)/mem/memset.h			\
-				$(KERN_INCLUDE_DIR)/util/ascii_tools.h		\
-				$(KERN_INCLUDE_DIR)/conf.h
+KERN_HEADERS=		$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
+					$(KERN_INCLUDE_DIR)/drivers/vga/vga.h		\
+					$(KERN_INCLUDE_DIR)/drivers/serial/uart.h	\
+					$(KERN_INCLUDE_DIR)/drivers/serial/serial.h	\
+					$(KERN_INCLUDE_DIR)/inttypes.h				\
+					$(KERN_INCLUDE_DIR)/mem/memcpy.h			\
+					$(KERN_INCLUDE_DIR)/mem/memswp.h			\
+					$(KERN_INCLUDE_DIR)/mem/memset.h			\
+					$(KERN_INCLUDE_DIR)/mem/pmm.h				\
+					$(KERN_INCLUDE_DIR)/util/ascii_tools.h		\
+					$(KERN_INCLUDE_DIR)/conf.h
 
 KERN_SOURCE_DIR=kernel
-KERN_C_SOURCES=	$(KERN_SOURCE_DIR)/drivers/io/ports.c		\
-				$(KERN_SOURCE_DIR)/drivers/vga/vga.c		\
-				$(KERN_SOURCE_DIR)/drivers/serial/uart.c	\
-				$(KERN_SOURCE_DIR)/drivers/serial/serial.c	\
-				$(KERN_SOURCE_DIR)/mem/memcpy.c				\
-				$(KERN_SOURCE_DIR)/mem/memswp.c				\
-				$(KERN_SOURCE_DIR)/mem/memset.c				\
-				$(KERN_SOURCE_DIR)/util/ascii_tools.c		\
-				$(KERN_SOURCE_DIR)/init.c
+KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/drivers/io/ports.c		\
+					$(KERN_SOURCE_DIR)/drivers/vga/vga.c		\
+					$(KERN_SOURCE_DIR)/drivers/serial/uart.c	\
+					$(KERN_SOURCE_DIR)/drivers/serial/serial.c	\
+					$(KERN_SOURCE_DIR)/mem/memcpy.c				\
+					$(KERN_SOURCE_DIR)/mem/memswp.c				\
+					$(KERN_SOURCE_DIR)/mem/memset.c				\
+					$(KERN_SOURCE_DIR)/mem/pmm.c				\
+					$(KERN_SOURCE_DIR)/util/ascii_tools.c		\
+					$(KERN_SOURCE_DIR)/init.c
 
-KERN_ASM_SOURCES= 	$(KERN_SOURCE_DIR)/arch/x86_64/start.asm	\
-					$(KERN_SOURCE_DIR)/arch/x86_64/kernel_stub.asm
+KERN_ARCH_DIR=kernel/arch/$(KERN_PLATFORM)
+KERN_ASM_SOURCES= 	$(KERN_ARCH_DIR)/start.asm					\
+					$(KERN_ARCH_DIR)/kernel_stub.asm			\
+					$(KERN_ARCH_DIR)/utils/e820.asm				\
+					$(KERN_ARCH_DIR)/utils/call_real.asm
 
+KERN_OBJECTS= 		${KERN_ASM_SOURCES:.asm=.o}					\
+					${KERN_C_SOURCES:.c=.o}
 
-KERN_OBJECTS= 	${KERN_ASM_SOURCES:.asm=.o}	\
-				${KERN_C_SOURCES:.c=.o}
+KERN_REAL_SOURCES=	$(KERN_ARCH_DIR)/utils/real/e820.real		\
+					$(KERN_ARCH_DIR)/utils/real/real_init.real
+
+KERN_REAL_BINS=		${KERN_REAL_SOURCES:.real=.bin}
 
 OS_IMAGE_NAME=arkon
 
 CC_INCLUDE_DIRS=kernel/include/
-CC_FLAGS=-I$(CC_INCLUDE_DIRS) -Wall -Wextra -g
+CC_FLAGS=-I$(CC_INCLUDE_DIRS) -Wall -Wextra -g -O3
 
 ifeq ("$(KERN_PLATFORM)","x86_64")
 	KERN_ASM_PLATFORM=elf64
@@ -119,7 +128,9 @@ define write_kern_config_h
 endef
 
 define write_kern_info_asm
-	echo "%define KERN_LOAD_ADDR $(KERN_LOAD_ADDR)" > bootloader/i386/kern_info.asm
+	echo "%ifndef _boot_kern_info_asm" > bootloader/i386/kern_info.asm
+	echo "%define _boot_kern_info_asm" >> bootloader/i386/kern_info.asm
+	echo "%define KERN_LOAD_ADDR $(KERN_LOAD_ADDR)" >> bootloader/i386/kern_info.asm
 	printf "%%define KERN_SECTOR_COUNT " >> bootloader/i386/kern_info.asm
 	$(KERN_SECTOR_COUNT) >> bootloader/i386/kern_info.asm
 	printf "%%define KERN_SEGMENT_ADDR " >> bootloader/i386/kern_info.asm
@@ -127,6 +138,7 @@ define write_kern_info_asm
 	printf "%%define KERN_SEGMENT_OFF " >> bootloader/i386/kern_info.asm
 	printf $(KERN_LOAD_ADDR) | awk --non-decimal-data '{printf("%d", $$1 % 0x10)}' >> bootloader/i386/kern_info.asm
 	echo "\n%define kernel_vaddr $(KERN_VIRT_ADDR)" >> bootloader/i386/kern_info.asm
+	echo "%endif" >> bootloader/i386/kern_info.asm
 endef
 
 # arg 1 is input file, arg 2 is options for the preprocesser, arg 3 is 
@@ -172,7 +184,10 @@ bootloader/i386/kern_info.asm:
 kernel/%.o: kernel/%.c ${KERN_HEADERS}
 	$(KERN_TOOL_PREFIX)$(CC) $(CC_FLAGS) -ffreestanding -c $< -o $@ 
 
-kernel/%.o: kernel/%.asm
+kernel/%.bin: kernel/%.real bootloader/i386/kern_info.asm
+	$(call assemble_as,bin,$<,$@)
+	
+kernel/%.o: kernel/%.asm 
 	$(call assemble_as,$(KERN_ASM_PLATFORM),$<,$@)
 
 bootloader/%.o: %.asm
@@ -184,7 +199,7 @@ boot.bin: bootloader/i386/boot.asm kernel.bin
 	$(call write_kern_info_asm)
 	$(call assemble_as_with_include,bin,bootloader/i386/,$<,$@)
 
-kernel.bin: $(KERN_INCLUDE_DIR)/conf.h bootloader/i386/kern_info.asm ${KERN_OBJECTS}
+kernel.bin: $(KERN_REAL_BINS) $(KERN_INCLUDE_DIR)/conf.h bootloader/i386/kern_info.asm ${KERN_OBJECTS}
 	$(call gen_kern_linker,binary)
 	$(call link_with_prefix,$(KERN_TOOL_PREFIX),$@,,KERN_OBJECTS,kernel.ld)
 	
@@ -196,14 +211,20 @@ $(OS_IMAGE_NAME).bin: boot.bin kernel.bin
 	cat $^ > $@
 
 clean:
-	rm -rf *.bin *.o *.elf $(KERN_OBJECTS) bootloader/i386/*.o bootloader/i386/kern_info.asm kernel/arch/x86_64/*.o kernel.ld $(KERN_INCLUDE_DIR)/conf.h kernel_inc.gen
+	rm -rf *.bin *.o *.elf $(KERN_OBJECTS) bootloader/i386/*.o bootloader/i386/kern_info.asm kernel/arch/x86_64/*.o kernel.ld $(KERN_INCLUDE_DIR)/conf.h kernel_inc.gen $(KERN_REAL_BINS)
 
 run: $(OS_IMAGE_NAME).bin
-	qemu-system-x86_64 $(QEMU_OPTIONS) -fda $(OS_IMAGE_NAME).bin
+	qemu-system-x86_64 $(QEMU_OPTIONS) -hda $(OS_IMAGE_NAME).bin
+
+debug-qemu: $(OS_IMAGE_NAME).bin
+	qemu-system-x86_64 -d int -monitor stdio -no-shutdown -no-reboot -hda $(OS_IMAGE_NAME).bin
 
 debug-gdb: $(OS_IMAGE_NAME).bin kernel.elf
-	qemu-system-x86_64 $(QEMU_OPTIONS) -s -S -fda $(OS_IMAGE_NAME).bin &
+	qemu-system-x86_64 $(QEMU_OPTIONS) -s -S -hda $(OS_IMAGE_NAME).bin &
 	$(GDB) -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 crun: clean run
 cbuild: clean $(OS_IMAGE_NAME).bin
+cdebug-gdb: clean debug-gdb
+cdebug-qemu: clean debug-qemu
+build: $(OS_IMAGE_NAME).bin

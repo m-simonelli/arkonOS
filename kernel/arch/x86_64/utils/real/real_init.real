@@ -1,0 +1,128 @@
+%include "kernel/arch/x86_64/gdt.inc"
+[org 0x1000]
+[bits 64]
+
+section .text
+; assumes first entry of caller gdt is long mode code seg, second entry is data seg
+global real_init
+real_init:
+    ; ebx is argument to real mode function
+    mov [caller_ebx], ebx
+    ; store stack point as called function will trash esp
+    mov [caller_stack], rsp
+    ; store control registers that we modify
+    mov rax, cr0
+    mov [caller_cr0], rax
+    mov rax, cr3
+    mov [caller_cr3], rax
+    mov rax, cr4
+    mov [caller_cr4], rax
+
+    ; reload cs, far jump to 16 bit real mode
+    ; have to do it like this becuase segment:offset jumps are not allowed
+    ; in long mode
+    jmp far dword [pmode16ptr]
+
+align 4
+pmode16ptr:
+dd pmode16
+dw R_M_CODE
+
+[bits 16]
+pmode16:
+    ; set up segment registers
+    mov ax, R_M_DATA
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov fs, ax
+    mov gs, ax
+
+    ; disable protection, paging, and mp
+    mov eax, cr0
+    and eax, 0x7FFFFFFC
+    mov cr0, eax
+
+    ; disable long mode in efer
+    mov ecx, 0xc0000080
+    rdmsr
+    and eax, 0xfffffeff
+    wrmsr
+
+    ; disable pae, pse and whatever else is set
+    xor eax, eax
+    mov cr4, eax
+
+    ; far jump to 16 bit real mode
+    jmp 0:rmode16
+
+rmode16:
+    ; set segment registers to 0, no gdt in real mode
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+
+    ; set up an arbitrary stack
+    mov esp, 0xFFF0
+
+    ; restore the argument provided by caller to ebx
+    mov ebx, [caller_ebx]
+    ; call the real mode function
+    call 0x8000
+
+.return_to_long_mode:
+    ; restore cr3
+    mov eax, [caller_cr3]
+    mov cr3, eax
+
+    ; enable pae and pge
+    mov eax, 0xA0
+    mov cr4, eax
+
+    ; enable long mode in efer
+    mov ecx, 0xc0000080
+    rdmsr
+    or eax, 1 << 8
+    wrmsr
+
+    ; enable protection and paging
+    mov eax, cr0
+    or eax, 0x80000001
+    mov cr0, eax
+
+    ; reload cs, switch to long mode
+    jmp KCODE_64:lmode
+[bits 64]
+lmode:
+    ; set up segment registers
+    mov ax, KDATA_64
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+
+    ; restore control registers (cr3 was already restored above)
+    mov rax, [caller_cr0]
+    mov cr0, rax
+    mov rax, [caller_cr4]
+    mov cr4, rax
+
+    ; restore stack
+    mov rsp, [caller_stack]
+    ret
+
+section .data
+
+align 4
+caller_ebx: dq 0
+caller_cr0: dq 0
+caller_cr3: dq 0
+caller_cr4: dq 0
+caller_stack: dq 0
+caller_gdt: 
+    dq 0
+    dw 0

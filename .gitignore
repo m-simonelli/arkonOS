@@ -1,4 +1,5 @@
 #this is really just a generic gitignore that i took from some other projects of mine
+#also some were pulled from random sites lol
 # VSCode files
 .vscode/
 # **Xcode Files**

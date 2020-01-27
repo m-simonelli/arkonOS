@@ -1,30 +1,26 @@
-%define DISK_INT 0x13
-%define DISK_READ_FUNC 0x2
-
 %include "util/err/error_codes.asm"
 %include "util/err/error.asm"
-;read `dh` sectors from drive `dl` into ES:BX starting at sector ax
+; read sectors from drive 0x80 (drive 0) with address packet ds:si
 disk_read:
     pusha
-    push dx ; this gets overwritten, save it to be popped
-
-    mov cx, ax              ;cylinder
-    mov ah, DISK_READ_FUNC  ;reading from disk
-    mov al, dh              ;amount of sectors
-    mov dh, 0x00            ;head 0
-
-    int DISK_INT            ;carry bit is set upon error
-    jc disk_error           ;jump to error if bios gave us an error
-
-    pop dx                  ;restoring this
-    cmp al, dh              ;check we read the right number of sectors
-    jne sector_error        ;read incorrect amount of sectors
-
+    mov dl, 0x80
+    mov cx, [da_packet.blkcnt]
+    mov ah, 0x42
+    int 0x13
+    ; if cf is set, bios gave error
+    jc disk_error
+    ; check how many sectors were read
+    mov dx, [da_packet.blkcnt]
+    cmp cx, dx
+    ; read incorrect amount of sectors
+    jne sector_error
     popa
     ret
 
 disk_error:
-    mov ax, ERROR_DISK_READ
+    ; int 13h sets ah to the error
+    mov al, ah
+    mov ah, 0
     mov bx, disk_error_string
     jmp error
 
@@ -34,7 +30,18 @@ sector_error:
     jmp error
 
 disk_error_string:
-    db 'Error while reading disk', 0
+    db 'Disk read err', 0
 
 sector_error_string:
-    db 'Invalid sector count', 0
+    db 'Sector cnt err', 0
+
+align 2
+; values are preset to kernel load values to save bytes
+da_packet:
+.size:      db 0x10 ; size of packet (0x10 or 0x18 if using 64 bit extension)
+            db 0    ; reserved (0)
+.blkcnt:    dw 1 ; num of blocks to transfer
+.bufoff:    dw 0x0000   ; transfer buffer segment offset
+.bufseg:    dw 0x2000   ; transfer buffer segment
+.blknum:    dd 1    ; starting block number
+.blknumhi:  dd 0

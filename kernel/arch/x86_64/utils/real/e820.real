@@ -1,0 +1,45 @@
+[org 0x8000]
+[bits 16]
+push ebp
+xor ebp, ebp
+push ebx                ;this is where entry count will be
+add ebx, 4              ;entry count takes 4 bytes
+push ebx                ;this is where entries will start
+xor ebx, ebx            ;first call must have ebx=0
+e820_loop:
+    mov eax, 0xe820     ;tell bios to "query system address map"
+    mov ecx, 24         ;force 24 bytes
+    mov edx, 0x534d4150 ;SMAP magic
+    mov edi, e820_temp  ;temporary buffer to write to, because bios can't 
+                        ;write higher than 0xFFFFF. also es is guaranteed to be
+                        ;0 from real_init.real
+    int 0x15            ;call bios interrupt
+    jc e820_err
+    mov edx, 0x534d4150 ;apparently this gets trashed
+    cmp eax, edx        ;eax should be set to SMAP
+    jne e820_err        ;edx was set incorrectly
+    pop edi             ;write to requested address
+    mov esi, e820_temp
+    mov ecx, 24
+    o32 a32 movsb
+    inc ebp
+    push edi
+    test ebx, ebx       ;if ebx is 0, then we hit the last entry
+    jz e820_done        ;jump if last entry
+    jmp e820_loop
+
+e820_done:
+    pop edi
+    pop ebx
+    mov dword [ebx], ebp
+    pop ebp
+    ret
+    
+e820_err:
+    pop edi
+    pop ebx 
+    pop ebp
+    ret
+
+e820_temp:
+    times 24 db 0

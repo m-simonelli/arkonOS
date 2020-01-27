@@ -53,7 +53,7 @@ print_hex_byte_write_to_output_string:
     ror dl, 4           ; move to the next nibble
 
     add cx, 1           ; increase counter
-    jmp print_hex_byte_loop ;go back to loop
+    jmp print_hex_byte_loop ; go back to loop
 print_hex_byte_done:
     mov bx, HEX_STR     ; print the string
     call print_unformatted_string
@@ -73,7 +73,7 @@ clear_screen:       ; clear the screen
     mov dl, 0x4f    ; 79 cols of chars 
     int PRINT_INT
 
-    popa            ;restore registers
+    popa            ; restore registers
     ret
 
 HEX_STR:
