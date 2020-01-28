@@ -69,6 +69,8 @@ KERN_HEADERS=		$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
 					$(KERN_INCLUDE_DIR)/mem/memswp.h			\
 					$(KERN_INCLUDE_DIR)/mem/memset.h			\
 					$(KERN_INCLUDE_DIR)/mem/pmm.h				\
+					$(KERN_INCLUDE_DIR)/mem/e820.h				\
+					$(KERN_INCLUDE_DIR)/mem/strlen.h			\
 					$(KERN_INCLUDE_DIR)/util/ascii_tools.h		\
 					$(KERN_INCLUDE_DIR)/conf.h
 
@@ -81,6 +83,8 @@ KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/drivers/io/ports.c		\
 					$(KERN_SOURCE_DIR)/mem/memswp.c				\
 					$(KERN_SOURCE_DIR)/mem/memset.c				\
 					$(KERN_SOURCE_DIR)/mem/pmm.c				\
+					$(KERN_SOURCE_DIR)/mem/e820.c				\
+					$(KERN_SOURCE_DIR)/mem/strlen.c				\
 					$(KERN_SOURCE_DIR)/util/ascii_tools.c		\
 					$(KERN_SOURCE_DIR)/init.c
 
@@ -101,7 +105,16 @@ KERN_REAL_BINS=		${KERN_REAL_SOURCES:.real=.bin}
 OS_IMAGE_NAME=arkon
 
 CC_INCLUDE_DIRS=kernel/include/
-CC_FLAGS=-I$(CC_INCLUDE_DIRS) -Wall -Wextra -g -O3
+CC_FLAGS=	-I$(CC_INCLUDE_DIRS) 	\
+			-Wall				 	\
+			-Wextra 				\
+			-g 						\
+			-O3 					\
+			-mno-sse                \
+			-mno-sse2               \
+			-mno-mmx                \
+			-mno-80387              \
+			-mno-red-zone           \
 
 ifeq ("$(KERN_PLATFORM)","x86_64")
 	KERN_ASM_PLATFORM=elf64

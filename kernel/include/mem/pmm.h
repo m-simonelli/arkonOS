@@ -1,2 +1,6 @@
+#ifndef _mem_pmm_h
+#define _mem_pmm_h
+
 #include <inttypes.h>
-extern mem_ptr_t e820_map_addr;
+
+#endif /* _mem_pmm_h */

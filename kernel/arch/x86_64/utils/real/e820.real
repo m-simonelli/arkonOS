@@ -21,7 +21,7 @@ e820_loop:
     pop edi             ;write to requested address
     mov esi, e820_temp
     mov ecx, 24
-    o32 a32 movsb
+    o32 a32 rep movsb
     inc ebp
     push edi
     test ebx, ebx       ;if ebx is 0, then we hit the last entry

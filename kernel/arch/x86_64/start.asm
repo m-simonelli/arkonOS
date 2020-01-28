@@ -132,7 +132,7 @@ goto_kmain:
     mov ss, ax
     mov rdi, 0x8800
     call do_e820_mem_map
-    mov qword [e820_map_addr], 0x8800
+    mov word [e820_map_addr], 0x8800
     ; can't directly call addresses >2GiB from rip
     ; move address into register and call the register
     mov rax, kmain

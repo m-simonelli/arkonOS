@@ -60,4 +60,14 @@ typedef u16 word_t;
 typedef u32 dword_t;
 typedef u64 qword_t;
 
+typedef count_t iterator_t;
+
+#define BYTE byte_t
+#define WORD word_t
+#define DWORD dword_t
+#define QWORD qword_t
+
+#define NULL 0
+#define NULL_PTR NULL
+
 #endif /* _inttypes_h */

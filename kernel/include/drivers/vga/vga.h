@@ -76,6 +76,18 @@ typedef struct vga_cursor_pos {
 void vga_print(char *s);
 
 /*!
+    @function vga_print_color
+    Print null terminated string `s` to vga with attributes `attr`
+
+    @param s
+    A pointer to a null terminated string that will be printed to VGA
+
+    @param attr
+    The attributes for the text to have
+!*/
+void vga_print_color(char *s, uint8_t attr);
+
+/*!
     @function vga_clear_screen
     Clears the screen to black
 !*/
@@ -118,4 +130,34 @@ void vga_log(char *s);
     shouldn't be called directly.
 !*/
 void vga_scroll_line();
+
+/*!
+    @function vga_print_xxx
+    Print value `val` to vga with base `base`
+
+    @param val
+    The value to be printed to vga
+
+    @param base
+    The base of the val
+!*/
+void vga_print_u8(uint8_t val, uint8_t base);
+void vga_print_u16(uint16_t val, uint8_t base);
+void vga_print_u32(uint32_t val, uint8_t base);
+void vga_print_u64(uint64_t val, uint8_t base);
+void vga_print_i8(int8_t val, uint8_t base);
+void vga_print_i16(int16_t val, uint8_t base);
+void vga_print_i32(int32_t val, uint8_t base);
+void vga_print_i64(int64_t val, uint8_t base);
+
+/*!
+    @function vga_print_from_address
+
+    @param addr
+    The address where to print from
+
+    @param cnt
+    The amount of bytes to print
+!*/
+void vga_print_from_address(mem_ptr_t addr, count_t cnt);
 #endif /* _drivers_vga_h */
