@@ -162,7 +162,7 @@ Set provided interrupts, values from `enum uart_interrupt_enable_register`
 can be bitwise OR'd and given here
 */
 void uart_set_interrupts(uart_interrupt_t interrupts) {
-    /* Get low 6 bits of interrupt, top 2 bits are reserved so don't write*/
+    /* Get low 6 bits of interrupt, top 2 bits are reserved so don't write */
     port_byte_out(COM_PORT + OFF_INT_E_REG, interrupts & 0x3F);
 }
 

@@ -36,6 +36,8 @@ QEMU_REDIRECT_SERIAL_DEVICE=stdio
 QEMU_REDIRECT_DEBUGCON=1
 QEMU_REDIRECT_DEBUGCON_DEVICE=stdio
 
+QEMU_OPTIONS=-m 512M
+
 #set this to where you want the kernel to be initially loaded
 #k_start (kernel/arch/PLATFORM/start.asm) will be at this physical 
 #address after kmain() is hit, the kernel will relocate itself

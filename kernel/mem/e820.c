@@ -22,6 +22,7 @@ mem_ptr_t e820_map_addr = NULL_PTR;
 e820_entry_t e820_entries[E820_MAX] = {0};
 
 e820_entry_t largest_contiguous_region;
+size_t total_e820_size;
 
 void init_e820(mem_ptr_t e820_addr) {
     /* Iterate over all entries and log them to VGA */
@@ -61,6 +62,12 @@ void init_e820(mem_ptr_t e820_addr) {
     vga_print("\n         type:   ");
     vga_print(e820_region_type_strings[largest_contiguous_region.type]);
     vga_print_char('\n', 0);
+
+    total_e820_size = get_total_e820_size();
+    vga_print_color("[e820] ", VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
+    vga_print("Total size: ");
+    vga_print_u64(total_e820_size, 16);
+    vga_print_char('\n', 0);
 }
 
 e820_entry_t get_longest_contiguous_region(uint8_t skip) {
@@ -79,5 +86,11 @@ e820_entry_t get_longest_contiguous_region(uint8_t skip) {
             ret = e820_entries[i];
         }
     }
+    return ret;
+}
+
+size_t get_total_e820_size(){
+    size_t ret = 0;
+    for(count_t i = 0; i < E820_MAX; i++) ret += e820_entries[i].length;
     return ret;
 }

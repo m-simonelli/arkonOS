@@ -37,6 +37,7 @@ typedef struct e820_entry e820_entry_t;
 
 void init_e820(mem_ptr_t e820_addr);
 e820_entry_t get_longest_contiguous_region(uint8_t skip);
+size_t get_total_e820_size();
 
 extern mem_ptr_t e820_map_addr;
 

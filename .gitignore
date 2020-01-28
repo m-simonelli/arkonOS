@@ -2,6 +2,9 @@
 #also some were pulled from random sites lol
 # VSCode files
 .vscode/
+
+#build files
+*.bin
 # **Xcode Files**
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
