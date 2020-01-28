@@ -132,22 +132,99 @@ void vga_log(char *s);
 void vga_scroll_line();
 
 /*!
-    @function vga_print_xxx
+    @function vga_print_u8
     Print value `val` to vga with base `base`
 
     @param val
     The value to be printed to vga
 
     @param base
-    The base of the val
+    The base of the value to be printed
 !*/
 void vga_print_u8(uint8_t val, uint8_t base);
+
+/*!
+    @function vga_print_u16
+    Print value `val` to vga with base `base`
+
+    @param val
+    The value to be printed to vga
+
+    @param base
+    The base of the value to be printed
+!*/
 void vga_print_u16(uint16_t val, uint8_t base);
+
+/*!
+    @function vga_print_u32
+    Print value `val` to vga with base `base`
+
+    @param val
+    The value to be printed to vga
+
+    @param base
+    The base of the value to be printed
+!*/
 void vga_print_u32(uint32_t val, uint8_t base);
+
+/*!
+    @function vga_print_u64
+    Print value `val` to vga with base `base`
+
+    @param val
+    The value to be printed to vga
+
+    @param base
+    The base of the value to be printed
+!*/
 void vga_print_u64(uint64_t val, uint8_t base);
+
+/*!
+    @function vga_print_i8
+    Print value `val` to vga with base `base`
+
+    @param val
+    The value to be printed to vga
+
+    @param base
+    The base of the value to be printed
+!*/
 void vga_print_i8(int8_t val, uint8_t base);
+
+/*!
+    @function vga_print_i16
+    Print value `val` to vga with base `base`
+
+    @param val
+    The value to be printed to vga
+
+    @param base
+    The base of the value to be printed
+!*/
 void vga_print_i16(int16_t val, uint8_t base);
+
+/*!
+    @function vga_print_i32
+    Print value `val` to vga with base `base`
+
+    @param val
+    The value to be printed to vga
+
+    @param base
+    The base of the value to be printed
+!*/
 void vga_print_i32(int32_t val, uint8_t base);
+
+/*!
+    @function vga_print_i64
+    Print value `val` to vga with base `base`
+
+    @param val
+    The value to be printed to vga
+
+    @param base
+    The base of the value to be printed
+!*/
 void vga_print_i64(int64_t val, uint8_t base);
 
 /*!

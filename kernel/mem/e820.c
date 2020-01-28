@@ -48,7 +48,7 @@ void init_e820(mem_ptr_t e820_addr) {
         Get the largest contiguous region of physical memory to
         make sure pmm bitmap doesn't overwrite anything important
     */
-    largest_contiguous_region = get_longest_contiguous_region(0);
+    largest_contiguous_region = get_longest_contiguous_e820_region(0);
     /* Print the largest contiguous region */
     vga_print_color("[e820] ",
                     VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
@@ -70,7 +70,7 @@ void init_e820(mem_ptr_t e820_addr) {
     vga_print_char('\n', 0);
 }
 
-e820_entry_t get_longest_contiguous_region(uint8_t skip) {
+e820_entry_t get_longest_contiguous_e820_region(uint8_t skip) {
     /* If skipping more than E820_MAX entries, return an empty entry */
     if (skip > E820_MAX) return (e820_entry_t){0, 0, 0, E820_UNKNOWN};
     /* Start with an entry with length 0 */
