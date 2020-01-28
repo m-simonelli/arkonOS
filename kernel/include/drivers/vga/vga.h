@@ -66,6 +66,8 @@ typedef struct vga_cursor_pos {
 #define VGA_COL_BACKGROUND_YELLOW 0xe0
 #define VGA_COL_BACKGROUND_WHITE 0xf0
 
+void vga_putchar(char c);
+void vga_printf(const char *s, ...);
 /*!
     @function vga_print
     Print null terminated string `s` to vga
@@ -130,102 +132,6 @@ void vga_log(char *s);
     shouldn't be called directly.
 !*/
 void vga_scroll_line();
-
-/*!
-    @function vga_print_u8
-    Print value `val` to vga with base `base`
-
-    @param val
-    The value to be printed to vga
-
-    @param base
-    The base of the value to be printed
-!*/
-void vga_print_u8(uint8_t val, uint8_t base);
-
-/*!
-    @function vga_print_u16
-    Print value `val` to vga with base `base`
-
-    @param val
-    The value to be printed to vga
-
-    @param base
-    The base of the value to be printed
-!*/
-void vga_print_u16(uint16_t val, uint8_t base);
-
-/*!
-    @function vga_print_u32
-    Print value `val` to vga with base `base`
-
-    @param val
-    The value to be printed to vga
-
-    @param base
-    The base of the value to be printed
-!*/
-void vga_print_u32(uint32_t val, uint8_t base);
-
-/*!
-    @function vga_print_u64
-    Print value `val` to vga with base `base`
-
-    @param val
-    The value to be printed to vga
-
-    @param base
-    The base of the value to be printed
-!*/
-void vga_print_u64(uint64_t val, uint8_t base);
-
-/*!
-    @function vga_print_i8
-    Print value `val` to vga with base `base`
-
-    @param val
-    The value to be printed to vga
-
-    @param base
-    The base of the value to be printed
-!*/
-void vga_print_i8(int8_t val, uint8_t base);
-
-/*!
-    @function vga_print_i16
-    Print value `val` to vga with base `base`
-
-    @param val
-    The value to be printed to vga
-
-    @param base
-    The base of the value to be printed
-!*/
-void vga_print_i16(int16_t val, uint8_t base);
-
-/*!
-    @function vga_print_i32
-    Print value `val` to vga with base `base`
-
-    @param val
-    The value to be printed to vga
-
-    @param base
-    The base of the value to be printed
-!*/
-void vga_print_i32(int32_t val, uint8_t base);
-
-/*!
-    @function vga_print_i64
-    Print value `val` to vga with base `base`
-
-    @param val
-    The value to be printed to vga
-
-    @param base
-    The base of the value to be printed
-!*/
-void vga_print_i64(int64_t val, uint8_t base);
 
 /*!
     @function vga_print_from_address

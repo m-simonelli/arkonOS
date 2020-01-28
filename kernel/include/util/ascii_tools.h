@@ -18,4 +18,6 @@
     This is a number representing the base, hex is 16, decimal is 10, etc.
 !*/
 void itoa(int_t n, char *str, uint8_t base);
+
+void do_itoa(uint_t n, char *str, uint8_t base, uint8_t signed_int);
 #endif /* _util_ascii_tools_h */

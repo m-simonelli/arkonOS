@@ -2,7 +2,9 @@
 #include <drivers/vga/vga.h>
 #include <inttypes.h>
 #include <mem/e820.h>
+#include <mem/pmm.h>
 #include <util/ascii_tools.h>
+#include <libc/printf.h>
 
 void kmain() {
     /* Initialize VGA */
@@ -16,4 +18,6 @@ void kmain() {
 
     /* init the e820 map, store in an array, print to vga etc */
     init_e820(e820_map_addr);
+
+    init_pmm(total_e820_size);
 }

@@ -4,6 +4,8 @@
 #include <mem/memcpy.h>
 #include <mem/strlen.h>
 #include <util/ascii_tools.h>
+#include <libc/stdarg.h>
+#include <libc/printf.h>
 
 #define VGA_PRINT_NUM_ADD_PREFIX(str, base, val)                          \
     count_t i = 0;                                                        \
@@ -141,6 +143,17 @@ void vga_print(char *s) {
     vga_print_color(s, VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_WHITE);
 }
 
+void vga_putchar(char c) {
+    vga_print_char(c, VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_WHITE);
+}
+
+void vga_printf(const char *s, ...){
+    va_list(ap);
+    va_start(ap, s);
+    vsprintf(NULL, vga_putchar, s, ap);
+    va_end(ap);
+}
+
 void vga_log(char *s) {
     /* Prepend "[info] >" to the start of the message, this is to distinguish
      * logs, warns, and errors
@@ -152,44 +165,9 @@ void vga_log(char *s) {
     vga_print(s);
 }
 
-void vga_print_u8(uint8_t val, uint8_t base) { VGA_PRINT_NUM(val, base) }
-
-void vga_print_u16(uint16_t val, uint8_t base) { VGA_PRINT_NUM(val, base) }
-
-void vga_print_u32(uint32_t val, uint8_t base) { VGA_PRINT_NUM(val, base) }
-
-void vga_print_u64(uint64_t val, uint8_t base) { VGA_PRINT_NUM(val, base) }
-
-void vga_print_i8(int8_t val, uint8_t base) { VGA_PRINT_NUM(val, base) }
-
-void vga_print_i16(int16_t val, uint8_t base) { VGA_PRINT_NUM(val, base) }
-
-void vga_print_i32(int32_t val, uint8_t base) { VGA_PRINT_NUM(val, base) }
-
-void vga_print_i64(int64_t val, uint8_t base) { VGA_PRINT_NUM(val, base) }
-
 void vga_print_from_address(mem_ptr_t addr, count_t cnt) {
-    /* The current byte we are printing */
-    byte_t byte = 0;
-    /* 2 letters making up the byte, plus a null terminator*/
-    char byte_str[3] = {0};
     /* Iterate over `cnt` bytes starting at address `addr`*/
     for (count_t i = 0; i < cnt; i++) {
-        /* Set byte "letters" to 00 */
-        byte_str[0] = '0';
-        byte_str[1] = '0';
-        /* Get the current byte */
-        byte = *((mem_ptr_u8_t)((mem_addr_t)addr + i));
-        /* Add a ` 0x` every 4 bytes */
-        if (i % 4 == 0) {
-            /* Don't add the space if it's the first byte */
-            if (i != 0) vga_print_char(' ', 0);
-            vga_print_char('0', 0);
-            vga_print_char('x', 0);
-        }
-        /* Only call itoa if non zero, otherwise
-            print byte_str as is, which is "00" */
-        if (byte != 0) itoa((int_t)byte, (char *)&byte_str, 16);
-        vga_print((char *)&byte_str);
+        vga_printf("%#02x", *((u8 *)((u64)addr + i)));
     }
 }

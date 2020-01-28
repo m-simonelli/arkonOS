@@ -66,6 +66,8 @@ KERN_HEADERS=		$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
 					$(KERN_INCLUDE_DIR)/drivers/vga/vga.h		\
 					$(KERN_INCLUDE_DIR)/drivers/serial/uart.h	\
 					$(KERN_INCLUDE_DIR)/drivers/serial/serial.h	\
+					$(KERN_INCLUDE_DIR)/libc/printf.h			\
+					$(KERN_INCLUDE_DIR)/libc/stdarg.h			\
 					$(KERN_INCLUDE_DIR)/inttypes.h				\
 					$(KERN_INCLUDE_DIR)/mem/memcpy.h			\
 					$(KERN_INCLUDE_DIR)/mem/memswp.h			\
@@ -73,6 +75,7 @@ KERN_HEADERS=		$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
 					$(KERN_INCLUDE_DIR)/mem/pmm.h				\
 					$(KERN_INCLUDE_DIR)/mem/e820.h				\
 					$(KERN_INCLUDE_DIR)/mem/strlen.h			\
+					$(KERN_INCLUDE_DIR)/mem/string.h			\
 					$(KERN_INCLUDE_DIR)/util/ascii_tools.h		\
 					$(KERN_INCLUDE_DIR)/conf.h
 
@@ -81,9 +84,11 @@ KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/drivers/io/ports.c		\
 					$(KERN_SOURCE_DIR)/drivers/vga/vga.c		\
 					$(KERN_SOURCE_DIR)/drivers/serial/uart.c	\
 					$(KERN_SOURCE_DIR)/drivers/serial/serial.c	\
+					$(KERN_SOURCE_DIR)/libc/printf.c			\
 					$(KERN_SOURCE_DIR)/mem/memcpy.c				\
 					$(KERN_SOURCE_DIR)/mem/memswp.c				\
 					$(KERN_SOURCE_DIR)/mem/memset.c				\
+					$(KERN_SOURCE_DIR)/mem/string.c				\
 					$(KERN_SOURCE_DIR)/mem/pmm.c				\
 					$(KERN_SOURCE_DIR)/mem/e820.c				\
 					$(KERN_SOURCE_DIR)/mem/strlen.c				\

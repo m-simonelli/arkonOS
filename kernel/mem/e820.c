@@ -31,17 +31,14 @@ void init_e820(mem_ptr_t e820_addr) {
         e820_entries[i] =
             (e820_entry_t){.base = *(u64 *)(e820_addr + 4 + (24 * i)),
                            .length = *(u64 *)(e820_addr + 12 + (24 * i)),
-                           .end = e820_entries[i].base + e820_entries[i].length,
+                           .end = *(u64 *)(e820_addr + 4 + (24 * i)) + *(u64 *)(e820_addr + 12 + (24 * i)),
                            .type = *(u32 *)(e820_addr + 20 + (24 * i))};
         /* Print the entry */
         vga_print_color("[e820] ",
                         VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
-        vga_print("start: ");
-        vga_print_u64(e820_entries[i].base, 16);
-        vga_print("    length: ");
-        vga_print_u64(e820_entries[i].length, 16);
-        vga_print("    type: ");
-        vga_print(e820_region_type_strings[e820_entries[i].type]);
+        vga_printf("start: %#08llx", e820_entries[i].base);
+        vga_printf("\tlength: %#08llx", e820_entries[i].length);
+        vga_printf("\ttype: %s", e820_region_type_strings[e820_entries[i].type]);
         vga_print_char('\n', 0);
     }
     /*
@@ -53,21 +50,15 @@ void init_e820(mem_ptr_t e820_addr) {
     vga_print_color("[e820] ",
                     VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
     vga_print("Largest Contiguous Region:");
-    vga_print("\n         start:  ");
-    vga_print_u64(largest_contiguous_region.base, 16);
-    vga_print("\n         end:    ");
-    vga_print_u64(largest_contiguous_region.end, 16);
-    vga_print("\n         length: ");
-    vga_print_u64(largest_contiguous_region.length, 16);
-    vga_print("\n         type:   ");
-    vga_print(e820_region_type_strings[largest_contiguous_region.type]);
+    vga_printf("\n\t\tstart:  %#08llx", largest_contiguous_region.base);
+    vga_printf("\n\t\tend:    %#08llx", largest_contiguous_region.end);
+    vga_printf("\n\t\tlength: %#08llx", largest_contiguous_region.length);
+    vga_printf("\n\t\ttype:   %s", e820_region_type_strings[largest_contiguous_region.type]);
     vga_print_char('\n', 0);
 
     total_e820_size = get_total_e820_size();
     vga_print_color("[e820] ", VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
-    vga_print("Total size: ");
-    vga_print_u64(total_e820_size, 16);
-    vga_print_char('\n', 0);
+    vga_printf("Total size: %#08llx\n", total_e820_size);
 }
 
 e820_entry_t get_longest_contiguous_e820_region(uint8_t skip) {
