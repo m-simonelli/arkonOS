@@ -1,5 +1,23 @@
 #ifndef _mem_memset_h
 #define _mem_memset_h
 #include <inttypes.h>
-void memset(mem_ptr_u8_t addr, byte_t d, size_t size);
+
+/*!
+    @function memset
+    Set bytes at a source address to a value
+
+    @param dst
+    The destination address to write to.
+
+    @param c
+    The byte to be written 
+
+    @param n
+    The amount of times to write byte
+
+    @return 
+    The destination address, solely to match the declaration in string.h
+!*/
+
+void *memset(void *dst, int c, size_t n);
 #endif /* _mem_memset_h */

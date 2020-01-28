@@ -3,6 +3,6 @@
 
 #include <inttypes.h>
 
-size_t strlen(const char *restrict s);
+size_t strlen(const char *s);
 
 #endif /* _mem_strlen_h */

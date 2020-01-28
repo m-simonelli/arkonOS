@@ -5,14 +5,17 @@
     @function memcpy
     Copy bytes from a source address to a destination address
 
-    @param dst
+    @param to
     The destination address to write to.
 
-    @param src
+    @param from
     The address from which to read from.
 
-    @param size
+    @param len
     The amount of bytes to be copied
+
+    @return 
+    The destination address, solely to match the declaration in string.h
 !*/
-void memcpy(mem_ptr_u8_t dst, const mem_ptr_t src, size_t size);
+void *memcpy(void *to, const void *from, size_t len);
 #endif /* _heap_memcpy_h */
