@@ -14,7 +14,7 @@
     @param len
     The amount of bytes to be copied
 
-    @return 
+    @return
     The destination address, solely to match the declaration in string.h
 !*/
 void *memcpy(void *to, const void *from, size_t len);

@@ -10,12 +10,12 @@
     The destination address to write to.
 
     @param c
-    The byte to be written 
+    The byte to be written
 
     @param n
     The amount of times to write byte
 
-    @return 
+    @return
     The destination address, solely to match the declaration in string.h
 !*/
 
