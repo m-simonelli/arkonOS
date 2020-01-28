@@ -1,11 +1,11 @@
 #include <drivers/io/ports.h>
 #include <drivers/vga/vga.h>
 #include <inttypes.h>
+#include <libc/printf.h>
+#include <libc/stdarg.h>
 #include <mem/memcpy.h>
 #include <mem/strlen.h>
 #include <util/ascii_tools.h>
-#include <libc/stdarg.h>
-#include <libc/printf.h>
 
 #define VGA_PRINT_NUM_ADD_PREFIX(str, base, val)                          \
     count_t i = 0;                                                        \
@@ -147,7 +147,7 @@ void vga_putchar(char c) {
     vga_print_char(c, VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_WHITE);
 }
 
-void vga_printf(const char *s, ...){
+void vga_printf(const char *s, ...) {
     va_list(ap);
     va_start(ap, s);
     vsprintf(NULL, vga_putchar, s, ap);

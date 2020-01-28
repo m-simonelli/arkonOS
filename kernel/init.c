@@ -1,10 +1,10 @@
 #include <drivers/serial/serial.h>
 #include <drivers/vga/vga.h>
 #include <inttypes.h>
+#include <libc/printf.h>
 #include <mem/e820.h>
 #include <mem/pmm.h>
 #include <util/ascii_tools.h>
-#include <libc/printf.h>
 
 void kmain() {
     /* Initialize VGA */

@@ -36,12 +36,20 @@ QEMU_REDIRECT_SERIAL_DEVICE=stdio
 QEMU_REDIRECT_DEBUGCON=1
 QEMU_REDIRECT_DEBUGCON_DEVICE=stdio
 
+#extra qemu options
 QEMU_OPTIONS=-m 512M
 
 #set this to where you want the kernel to be initially loaded
 #k_start (kernel/arch/PLATFORM/start.asm) will be at this physical 
 #address after kmain() is hit, the kernel will relocate itself
 KERN_LOAD_ADDR=0x100000
+
+#enable this to enable experimental `continuous bit` bitmap pmm
+#this makes each bit of the bitmap become 2 bits, where one is
+#for whether the page is free or not, and the other is for whether
+#it is a continuation of the allocation made on the previous page.
+#this simplifies freeing pages that were allocated in a group
+KERN_ENABLE_CONTINUATION_BITMAP_PMM=1
 
 #enable qemu specific features (i.e. port 0xe9 output)
 #1 = enabled, else not enabled
@@ -69,6 +77,7 @@ KERN_HEADERS=		$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
 					$(KERN_INCLUDE_DIR)/libc/printf.h			\
 					$(KERN_INCLUDE_DIR)/libc/stdarg.h			\
 					$(KERN_INCLUDE_DIR)/inttypes.h				\
+					$(KERN_INCLUDE_DIR)/limits.h				\
 					$(KERN_INCLUDE_DIR)/mem/memcpy.h			\
 					$(KERN_INCLUDE_DIR)/mem/memswp.h			\
 					$(KERN_INCLUDE_DIR)/mem/memset.h			\
@@ -144,6 +153,7 @@ define write_kern_config_h
 	echo "#define KERN_TARGET_$(KERN_PLATFORM)" >> $(KERN_INCLUDE_DIR)/conf.h
 	echo "#define KERN_TARGET_QEMU $(KERN_TARGET_QEMU)" >> $(KERN_INCLUDE_DIR)/conf.h
 	echo "#define KERN_QEMU_DEBUG_PORT_ENABLED $(KERN_QEMU_DEBUG_PORT_ENABLED)" >> $(KERN_INCLUDE_DIR)/conf.h
+	echo "#define KERN_ENABLE_CONTINUATION_BITMAP_PMM $(KERN_ENABLE_CONTINUATION_BITMAP_PMM)" >> $(KERN_INCLUDE_DIR)/conf.h
 	echo "#endif /* _kern_conf_h */" >> $(KERN_INCLUDE_DIR)/conf.h
 endef
 

@@ -51,12 +51,12 @@ void init_e820(mem_ptr_t e820_addr);
     memory map
 
     @param skip
-    The amount of entries to skip before starting the search, this must be 
+    The amount of entries to skip before starting the search, this must be
     below E820_MAX
 
     @return
-    If a useable region is found, an e820_entry_t that details the largest 
-    contiguous region found, containing the base address, the length, the 
+    If a useable region is found, an e820_entry_t that details the largest
+    contiguous region found, containing the base address, the length, the
     end address, and the type.
     If no useable regions were found, an e820_entry_t containing 0 for all
     values is returned

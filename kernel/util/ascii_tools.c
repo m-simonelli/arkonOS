@@ -1,6 +1,6 @@
+#include <limits.h>
 #include <mem/memswp.h>
 #include <util/ascii_tools.h>
-#include <limits.h>
 
 void reverse(char *str, uint_t len) {
     uint32_t start = 0;
@@ -18,7 +18,8 @@ void do_itoa(uint_t n, char *str, uint8_t base, uint8_t signed_int) {
     }
 
     int_t i, sign;
-    if(signed_int) if ((sign = n) < 0 && base == 10) n = -n;
+    if (signed_int)
+        if ((sign = n) < 0 && base == 10) n = -n;
 
     i = 0;
     uint_t rem;
@@ -28,11 +29,10 @@ void do_itoa(uint_t n, char *str, uint8_t base, uint8_t signed_int) {
         n /= base;
     } while (n);
 
-    if(signed_int) if (sign < 0 && base == 10) str[i++] = '-';
+    if (signed_int)
+        if (sign < 0 && base == 10) str[i++] = '-';
     str[i] = '\0';
     reverse(str, i);
 }
 
-void itoa(int_t n, char *str, uint8_t base) {
-    do_itoa(n, str, base, 1);
-}
+void itoa(int_t n, char *str, uint8_t base) { do_itoa(n, str, base, 1); }

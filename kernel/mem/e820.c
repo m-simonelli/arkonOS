@@ -31,14 +31,16 @@ void init_e820(mem_ptr_t e820_addr) {
         e820_entries[i] =
             (e820_entry_t){.base = *(u64 *)(e820_addr + 4 + (24 * i)),
                            .length = *(u64 *)(e820_addr + 12 + (24 * i)),
-                           .end = *(u64 *)(e820_addr + 4 + (24 * i)) + *(u64 *)(e820_addr + 12 + (24 * i)),
+                           .end = *(u64 *)(e820_addr + 4 + (24 * i)) +
+                                  *(u64 *)(e820_addr + 12 + (24 * i)),
                            .type = *(u32 *)(e820_addr + 20 + (24 * i))};
         /* Print the entry */
         vga_print_color("[e820] ",
                         VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
         vga_printf("start: %#08llx", e820_entries[i].base);
         vga_printf("\tlength: %#08llx", e820_entries[i].length);
-        vga_printf("\ttype: %s", e820_region_type_strings[e820_entries[i].type]);
+        vga_printf("\ttype: %s",
+                   e820_region_type_strings[e820_entries[i].type]);
         vga_print_char('\n', 0);
     }
     /*
@@ -53,11 +55,13 @@ void init_e820(mem_ptr_t e820_addr) {
     vga_printf("\n\t\tstart:  %#08llx", largest_contiguous_region.base);
     vga_printf("\n\t\tend:    %#08llx", largest_contiguous_region.end);
     vga_printf("\n\t\tlength: %#08llx", largest_contiguous_region.length);
-    vga_printf("\n\t\ttype:   %s", e820_region_type_strings[largest_contiguous_region.type]);
+    vga_printf("\n\t\ttype:   %s",
+               e820_region_type_strings[largest_contiguous_region.type]);
     vga_print_char('\n', 0);
 
     total_e820_size = get_total_e820_size();
-    vga_print_color("[e820] ", VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
+    vga_print_color("[e820] ",
+                    VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
     vga_printf("Total size: %#08llx\n", total_e820_size);
 }
 
@@ -80,8 +84,8 @@ e820_entry_t get_longest_contiguous_e820_region(uint8_t skip) {
     return ret;
 }
 
-size_t get_total_e820_size(){
+size_t get_total_e820_size() {
     size_t ret = 0;
-    for(count_t i = 0; i < E820_MAX; i++) ret += e820_entries[i].length;
+    for (count_t i = 0; i < E820_MAX; i++) ret += e820_entries[i].length;
     return ret;
 }

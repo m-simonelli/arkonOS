@@ -1,8 +1,8 @@
 #include <mem/string.h>
 
-char *strcpy(char *dst, char const *src){
+char *strcpy(char *dst, char const *src) {
     count_t i = 0;
-    while(src[i]){
+    while (src[i]) {
         dst[i] = src[i];
         i++;
     }
