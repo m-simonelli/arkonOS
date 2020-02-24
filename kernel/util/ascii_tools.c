@@ -3,11 +3,11 @@
 #include <util/ascii_tools.h>
 
 void reverse(char *str, uint_t len) {
-    uint32_t start = 0;
-    uint32_t end = len - 1;
+    size_t start = 0;
+    size_t end = len - 1;
     while (start < end)
-        memswp((uint8_t *)((uint32_t)str + (start++)),
-               (uint8_t *)((uint32_t)str + (end--)), 1);
+        memswp((char *)((size_t)str + (start++)),
+               (char *)((size_t)str + (end--)), 1);
 }
 
 void do_itoa(uint_t n, char *str, uint8_t base, uint8_t signed_int) {

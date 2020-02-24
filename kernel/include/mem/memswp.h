@@ -15,5 +15,5 @@
     @param size
     The amount of bytes to swap
 !*/
-void memswp(mem_ptr_u8_t m1, mem_ptr_u8_t m2, size_t size);
+void memswp(const char *m1, const char *m2, size_t size);
 #endif /* _heap_memswp_h */

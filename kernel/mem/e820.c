@@ -1,5 +1,5 @@
-#include <drivers/vga/vga.h>
 #include <mem/e820.h>
+#include <k_log.h>
 
 /*  The "unknown" strings are so that the corresponding string
     can be addressed by the type value given in the e820 entry  */
@@ -17,71 +17,29 @@ char *e820_region_type_strings[] = {"Unknown (0)",
                                     "Unknown (11)",
                                     "PRAM"};
 
-mem_ptr_t e820_map_addr = NULL_PTR;
-
+void *e820_map_addr = NULL;
 e820_entry_t e820_entries[E820_MAX] = {0};
-
-e820_entry_t largest_contiguous_region;
 size_t total_e820_size;
 
-void init_e820(mem_ptr_t e820_addr) {
+void init_e820(void *e820_addr) {
     /* Iterate over all entries and log them to VGA */
     for (count_t i = 0; i < *((dword_t *)e820_addr); i++) {
         /* Store each entry in an array */
         e820_entries[i] =
-            (e820_entry_t){.base = *(u64 *)(e820_addr + 4 + (24 * i)),
-                           .length = *(u64 *)(e820_addr + 12 + (24 * i)),
-                           .end = *(u64 *)(e820_addr + 4 + (24 * i)) +
-                                  *(u64 *)(e820_addr + 12 + (24 * i)),
-                           .type = *(u32 *)(e820_addr + 20 + (24 * i))};
+            (e820_entry_t){.base = *(uint64_t *)(e820_addr + 4 + (24 * i)),
+                           .length = *(uint64_t *)(e820_addr + 12 + (24 * i)),
+                           .end = *(uint64_t *)(e820_addr + 4 + (24 * i)) +
+                                  *(uint64_t *)(e820_addr + 12 + (24 * i)),
+                           .type = *(uint32_t *)(e820_addr + 20 + (24 * i))};
         /* Print the entry */
-        vga_print_color("[e820] ",
-                        VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
-        vga_printf("start: %#08llx", e820_entries[i].base);
-        vga_printf("\tlength: %#08llx", e820_entries[i].length);
-        vga_printf("\ttype: %s",
+        k_log("start: %#08llx", e820_entries[i].base);
+        k_printf("\tlength: %#08llx", e820_entries[i].length);
+        k_printf("\ttype: %s",
                    e820_region_type_strings[e820_entries[i].type]);
-        vga_print_char('\n', 0);
+        k_printf("\n");
     }
-    /*
-        Get the largest contiguous region of physical memory to
-        make sure pmm bitmap doesn't overwrite anything important
-    */
-    largest_contiguous_region = get_longest_contiguous_e820_region(0);
-    /* Print the largest contiguous region */
-    vga_print_color("[e820] ",
-                    VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
-    vga_print("Largest Contiguous Region:");
-    vga_printf("\n\t\tstart:  %#08llx", largest_contiguous_region.base);
-    vga_printf("\n\t\tend:    %#08llx", largest_contiguous_region.end);
-    vga_printf("\n\t\tlength: %#08llx", largest_contiguous_region.length);
-    vga_printf("\n\t\ttype:   %s",
-               e820_region_type_strings[largest_contiguous_region.type]);
-    vga_print_char('\n', 0);
-
     total_e820_size = get_total_e820_size();
-    vga_print_color("[e820] ",
-                    VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_CYAN);
-    vga_printf("Total size: %#08llx\n", total_e820_size);
-}
-
-e820_entry_t get_longest_contiguous_e820_region(uint8_t skip) {
-    /* If skipping more than E820_MAX entries, return an empty entry */
-    if (skip > E820_MAX) return (e820_entry_t){0, 0, 0, E820_UNKNOWN};
-    /* Start with an entry with length 0 */
-    e820_entry_t ret = {0, 0, 0, E820_UNKNOWN};
-    /* Iterate over all stored entries */
-    for (count_t i = skip; i < E820_MAX; i++) {
-        /* If current stored entry is both:
-            1. Useable (ignoring ACPI reclaimable)
-            2. Longer length than `ret`
-           then set ret to the current entry */
-        if (ret.length < e820_entries[i].length &&
-            e820_entries[i].type == E820_USEABLE) {
-            ret = e820_entries[i];
-        }
-    }
-    return ret;
+    k_log("Total size: %#08llx\n", total_e820_size);
 }
 
 size_t get_total_e820_size() {

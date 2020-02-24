@@ -24,6 +24,7 @@ void vsprintf(__attribute__((unused)) char *str, void (*putchar)(char),
             if (c == '%') break;
             /* If not a format character, just print it */
             if (c == '\t') {
+                /* Treat tabs as 4 spaces */
                 putchar(' ');
                 putchar(' ');
                 putchar(' ');
@@ -36,12 +37,14 @@ void vsprintf(__attribute__((unused)) char *str, void (*putchar)(char),
 
     next_format_char:
         i = 0;
+        /* Ensure that nbuf is zeroed */
         while (i++ < 31) nbuf[i] = 0;
         /* Sanity check that the character after the '%' exists */
         if ((c = *fmt++) == 0) break;
         switch (c) {
             /* %0 - %9 are treated as amount of padding 0's */
             case '0':
+                /* Enable leading zero padding */
                 flags |= LEAD_ZERO;
                 goto next_format_char;
             case '1':
@@ -61,43 +64,64 @@ void vsprintf(__attribute__((unused)) char *str, void (*putchar)(char),
             case '8':
                 /* fall through */
             case '9':
+                /*
+                    If a 0 came before this, this number is how many 0's to pad
+                    if no 0 came before, this number is how many ' 's to pad
+                */
                 npad_bytes = (c - '0');
                 goto next_format_char;
             case '*':
+                /* Treat the next va arg as the amount of padding bytes */
                 npad_bytes = va_arg(ap, int);
                 goto next_format_char;
             case '.':
+                /* Not implemented properly yet */
                 goto next_format_char;
             case '%':
+                /* "%%", print a physical "%" */
                 putchar(c);
                 break;
             case '#':
+                /* Enable ALT_FLAG, for hex this adds the 0x prefix,
+                    for octal 0 prefix, etc. */
                 flags |= ALT_FLAG;
                 goto next_format_char;
             case 'c':
+                /* Print a single character */
                 uc = (unsigned char)va_arg(ap, int);
                 putchar(uc);
                 break;
             case 's':
+                /* Print a null terminated string */
                 s = va_arg(ap, const char *);
+                /* Avoid printing from null */
                 if (s == 0) s = "<null>";
                 for (i = 0; s[i] != 0; i++) putchar(s[i]);
                 break;
             case 'l':
+                /* Long int modifier, if it was already
+                    enabled, long long modifier */
                 if (flags & LONG_NUM) flags |= LONG_LONG_NUM;
                 flags |= LONG_NUM;
                 goto next_format_char;
             case 'h':
+                /* Half int modifier, if it was already
+                    enabled, half half modifier */
                 if (flags & HALF_NUM) flags |= HALF_HALF_NUM;
                 flags |= HALF_NUM;
                 goto next_format_char;
             case 'z':
+                /* size_t modifier */
                 flags |= SIZE_T_NUM;
                 goto next_format_char;
             case 'i':
                 /* fall through */
             case 'd':
+                /* Ensure iterator is 0 */
                 i = 0;
+                /* Check ll before l, before hh, before h,
+                     before size_t modifiers, else normal int */
+                /* The (size_t)(type) casting prevents compiler warnings */
                 n = (flags & LONG_LONG_NUM)
                         ? (size_t)va_arg(ap, long long)
                         : (flags & LONG_NUM)
@@ -109,17 +133,30 @@ void vsprintf(__attribute__((unused)) char *str, void (*putchar)(char),
                                           : (flags & SIZE_T_NUM)
                                                 ? va_arg(ap, size_t)
                                                 : (size_t)va_arg(ap, int);
+                /* Convert to string with signing enabled */
                 do_itoa(n, (char *)&nbuf, 10, 1);
+                /* Handle padding bytes when padding amount
+                    is greater than current length */
                 if (npad_bytes > strlen((char *)&nbuf)) {
+                    /* Only pad so that the string is of length npad_bytes */
                     npad_bytes -= strlen((char *)&nbuf);
-                    for (; npad_bytes > 0; npad_bytes--) putchar('0');
+                    /* Print leading zeroes if set, else leading spaces */
+                    if (flags & LEAD_ZERO)
+                        for (; npad_bytes > 0; npad_bytes--) putchar('0');
+                    else
+                        for (; npad_bytes > 0; npad_bytes--) putchar(' ');
                 }
+                /* Write out the value using provided char printing handler */
                 for (i = 0; nbuf[i] != 0; i++) putchar(nbuf[i]);
+                /* Reset flags and npad_bytes */
                 flags = 0;
                 npad_bytes = 0;
                 break;
             case 'u':
+                /* same as case 'd' unless otherwise specified */
                 i = 0;
+                /* Reading vaargs as unsigned values
+                    causes casts to zero extend */
                 n = (flags & LONG_LONG_NUM)
                         ? (size_t)va_arg(ap, unsigned long long)
                         : (flags & LONG_NUM)
@@ -133,16 +170,21 @@ void vsprintf(__attribute__((unused)) char *str, void (*putchar)(char),
                                           : (flags & SIZE_T_NUM)
                                                 ? va_arg(ap, size_t)
                                                 : (size_t)va_arg(ap, int);
+                /* Convert to string with signing disabled */
                 do_itoa(n, (char *)&nbuf, 10, 0);
                 if (npad_bytes > strlen((char *)&nbuf)) {
                     npad_bytes -= strlen((char *)&nbuf);
-                    for (; npad_bytes > 0; npad_bytes--) putchar('0');
+                    if (flags & LEAD_ZERO)
+                        for (; npad_bytes > 0; npad_bytes--) putchar('0');
+                    else
+                        for (; npad_bytes > 0; npad_bytes--) putchar(' ');
                 }
                 for (i = 0; nbuf[i] != 0; i++) putchar(nbuf[i]);
                 flags = 0;
                 npad_bytes = 0;
                 break;
             case 'p':
+                /* Always have 0x prefix for pointers */
                 flags |= LONG_NUM | ALT_FLAG;
                 goto hex;
             case 'X':
@@ -150,6 +192,7 @@ void vsprintf(__attribute__((unused)) char *str, void (*putchar)(char),
                 /* fall through */
             hex:
             case 'x':
+                /* Same logic as case 'u', unless otherwise specified */
                 n = (flags & LONG_LONG_NUM)
                         ? (size_t)va_arg(ap, unsigned long long)
                         : (flags & LONG_NUM)
@@ -165,13 +208,17 @@ void vsprintf(__attribute__((unused)) char *str, void (*putchar)(char),
                                                 : (size_t)va_arg(ap,
                                                                  unsigned int);
                 do_itoa(n, (char *)&nbuf, 16, 0);
+                /* Print prefix if ALT_FLAG is set */
                 if (flags & ALT_FLAG) {
                     putchar('0');
                     putchar('x');
                 }
                 if (npad_bytes > strlen((char *)&nbuf)) {
                     npad_bytes -= strlen((char *)&nbuf);
-                    for (; npad_bytes > 0; npad_bytes--) putchar('0');
+                    if (flags & LEAD_ZERO)
+                        for (; npad_bytes > 0; npad_bytes--) putchar('0');
+                    else
+                        for (; npad_bytes > 0; npad_bytes--) putchar(' ');
                 }
                 for (i = 0; nbuf[i] != 0; i++) putchar(nbuf[i]);
                 flags = 0;
@@ -185,7 +232,7 @@ void vsprintf(__attribute__((unused)) char *str, void (*putchar)(char),
                 /* fall through */
             case 'n':
                 /* Not implemented */
-                /* fall through */
+                break;
             default:
                 putchar('%');
                 putchar(c);

@@ -43,25 +43,7 @@ typedef struct e820_entry {
     The address at which the e820 entries start, the first uint32_t at this
     address should be the amount of elements in the list
 !*/
-void init_e820(mem_ptr_t e820_addr);
-
-/*!
-    @function get_longest_contiguous_e820_region
-    Find and return the largest contiguous region of memory in the e820
-    memory map
-
-    @param skip
-    The amount of entries to skip before starting the search, this must be
-    below E820_MAX
-
-    @return
-    If a useable region is found, an e820_entry_t that details the largest
-    contiguous region found, containing the base address, the length, the
-    end address, and the type.
-    If no useable regions were found, an e820_entry_t containing 0 for all
-    values is returned
-!*/
-e820_entry_t get_longest_contiguous_e820_region(uint8_t skip);
+void init_e820(void *e820_addr);
 
 /*!
     @function get_total_e820_size
@@ -72,9 +54,8 @@ e820_entry_t get_longest_contiguous_e820_region(uint8_t skip);
 !*/
 size_t get_total_e820_size();
 
-extern mem_ptr_t e820_map_addr;
+extern void *e820_map_addr;
 extern e820_entry_t e820_entries[E820_MAX];
-extern e820_entry_t largest_contiguous_region;
 extern size_t total_e820_size;
 
 #endif /* _mem_e820_h */

@@ -4,7 +4,7 @@ KERN_PLATFORM=x86_64
 
 #assembler
 #ideally nasm or some nasm compatible assembler
-ASSEMBLER=nasm
+AS=nasm
 
 #compiler
 CC=gcc
@@ -44,12 +44,8 @@ QEMU_OPTIONS=-m 512M
 #address after kmain() is hit, the kernel will relocate itself
 KERN_LOAD_ADDR=0x100000
 
-#enable this to enable experimental `continuous bit` bitmap pmm
-#this makes each bit of the bitmap become 2 bits, where one is
-#for whether the page is free or not, and the other is for whether
-#it is a continuation of the allocation made on the previous page.
-#this simplifies freeing pages that were allocated in a group
-KERN_ENABLE_CONTINUATION_BITMAP_PMM=1
+#enable this to copy all vga and other output to serial
+KERN_LOG_TO_SERIAL=1
 
 #enable qemu specific features (i.e. port 0xe9 output)
 #1 = enabled, else not enabled
@@ -82,10 +78,13 @@ KERN_HEADERS=		$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
 					$(KERN_INCLUDE_DIR)/mem/memswp.h			\
 					$(KERN_INCLUDE_DIR)/mem/memset.h			\
 					$(KERN_INCLUDE_DIR)/mem/pmm.h				\
+					$(KERN_INCLUDE_DIR)/mem/vmm.h				\
 					$(KERN_INCLUDE_DIR)/mem/e820.h				\
 					$(KERN_INCLUDE_DIR)/mem/strlen.h			\
 					$(KERN_INCLUDE_DIR)/mem/string.h			\
 					$(KERN_INCLUDE_DIR)/util/ascii_tools.h		\
+					$(KERN_INCLUDE_DIR)/panic.h					\
+					$(KERN_INCLUDE_DIR)/k_log.h					\
 					$(KERN_INCLUDE_DIR)/conf.h
 
 KERN_SOURCE_DIR=kernel
@@ -99,16 +98,20 @@ KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/drivers/io/ports.c		\
 					$(KERN_SOURCE_DIR)/mem/memset.c				\
 					$(KERN_SOURCE_DIR)/mem/string.c				\
 					$(KERN_SOURCE_DIR)/mem/pmm.c				\
+					$(KERN_SOURCE_DIR)/mem/vmm.c				\
 					$(KERN_SOURCE_DIR)/mem/e820.c				\
 					$(KERN_SOURCE_DIR)/mem/strlen.c				\
 					$(KERN_SOURCE_DIR)/util/ascii_tools.c		\
+					$(KERN_SOURCE_DIR)/util/panic.c				\
+					$(KERN_SOURCE_DIR)/util/dbg_log.c			\
 					$(KERN_SOURCE_DIR)/init.c
 
 KERN_ARCH_DIR=kernel/arch/$(KERN_PLATFORM)
 KERN_ASM_SOURCES= 	$(KERN_ARCH_DIR)/start.asm					\
 					$(KERN_ARCH_DIR)/kernel_stub.asm			\
 					$(KERN_ARCH_DIR)/utils/e820.asm				\
-					$(KERN_ARCH_DIR)/utils/call_real.asm
+					$(KERN_ARCH_DIR)/utils/call_real.asm		\
+					$(KERN_SOURCE_DIR)/util/panic_64.asm		\
 
 KERN_OBJECTS= 		${KERN_ASM_SOURCES:.asm=.o}					\
 					${KERN_C_SOURCES:.c=.o}
@@ -125,12 +128,17 @@ CC_FLAGS=	-I$(CC_INCLUDE_DIRS) 	\
 			-Wall				 	\
 			-Wextra 				\
 			-g 						\
-			-O3 					\
+			-O0 					\
 			-mno-sse                \
 			-mno-sse2               \
+			-mno-sse3				\
+			-mno-sse4				\
 			-mno-mmx                \
 			-mno-80387              \
-			-mno-red-zone           \
+			-mno-avx512f			\
+			-mno-3dnow				\
+			-mno-red-zone			\
+			-mcmodel=kernel 		\
 
 ifeq ("$(KERN_PLATFORM)","x86_64")
 	KERN_ASM_PLATFORM=elf64
@@ -153,7 +161,9 @@ define write_kern_config_h
 	echo "#define KERN_TARGET_$(KERN_PLATFORM)" >> $(KERN_INCLUDE_DIR)/conf.h
 	echo "#define KERN_TARGET_QEMU $(KERN_TARGET_QEMU)" >> $(KERN_INCLUDE_DIR)/conf.h
 	echo "#define KERN_QEMU_DEBUG_PORT_ENABLED $(KERN_QEMU_DEBUG_PORT_ENABLED)" >> $(KERN_INCLUDE_DIR)/conf.h
-	echo "#define KERN_ENABLE_CONTINUATION_BITMAP_PMM $(KERN_ENABLE_CONTINUATION_BITMAP_PMM)" >> $(KERN_INCLUDE_DIR)/conf.h
+	echo "#define LOG_TO_SERIAL $(KERN_LOG_TO_SERIAL)" >> $(KERN_INCLUDE_DIR)/conf.h
+	echo "#define KERN_LOAD_ADDR $(KERN_LOAD_ADDR)" >> $(KERN_INCLUDE_DIR)/conf.h
+	echo "#define KERN_VADDR $(KERN_VIRT_ADDR)" >> $(KERN_INCLUDE_DIR)/conf.h
 	echo "#endif /* _kern_conf_h */" >> $(KERN_INCLUDE_DIR)/conf.h
 endef
 
@@ -188,12 +198,12 @@ endef
 # arg 1 is target (elf, elf64, bin), arg 2 is include dir, arg 3 is input 
 # file, arg 4 is output file
 define assemble_as_with_include
-	$(ASSEMBLER) -I $(2) $(3) -f $(1) -o $(4)
+	$(AS) -I $(2) $(3) -f $(1) -o $(4)
 endef
 
 # arg 1 is target, arg 2 is input file, arg 3 is output
 define assemble_as 
-	$(ASSEMBLER) $(2) -f $(1) -o $(3)
+	$(AS) $(2) -f $(1) -o $(3)
 endef
 
 # arg 1 is prefix, arg 2 is output file, arg 3 is arguments, 

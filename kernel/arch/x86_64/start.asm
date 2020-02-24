@@ -1,6 +1,7 @@
 %include "bootloader/i386/kern_info.asm"
 %include "kernel/arch/x86_64/gdt.inc"
 global k_start
+global halt
 [bits 32]
 [extern kmain]
 [extern bss_begin]
@@ -137,16 +138,25 @@ goto_kmain:
     ; move address into register and call the register
     mov rax, kmain
     call rax
-    ; function is a c function, hence it will return
+    ; kmain is a c function, hence it will return
     ; hang here instead of letting execution continue
     jmp $
 
+halt:
+    cli
+    hlt
 
 section .bss
 align 4096
+global PML4
 PML4:   resb 4096
+global PDP
 PDP:    resb 4096
+global KPDP
 KPDP:   resb 4096
+global PD
 PD:     resb 4096
+global PT
 PT:     resb 4096
-stack_top equ PML4
+global PMM_PD
+PMM_PD: resb 4096

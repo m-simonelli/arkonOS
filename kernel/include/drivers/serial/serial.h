@@ -4,9 +4,6 @@
 #include <drivers/io/ports.h>
 #include <inttypes.h>
 
-/* Whether to log messages to serial or not */
-#define LOG_TO_SERIAL 1
-
 /*
 The serial baud divisor, this is used to calculate the baud rate as follows:
     baud_rate = 115200 / BAUD_DIVISOR
@@ -45,5 +42,5 @@ void serial_init();
     @param serial_msg
     The message to be printed to serial
 !*/
-void serial_print(mem_ptr_char_t serial_msg);
+void serial_print(const char *restrict serial_msg);
 #endif /* _drivers_serial_serial_h */

@@ -1,3 +1,4 @@
+#include <k_log.h>
 #include <drivers/io/ports.h>
 #include <drivers/vga/vga.h>
 #include <inttypes.h>
@@ -7,53 +8,23 @@
 #include <mem/strlen.h>
 #include <util/ascii_tools.h>
 
-#define VGA_PRINT_NUM_ADD_PREFIX(str, base, val)                          \
-    count_t i = 0;                                                        \
-    /* Worst case (binary), the string will be                            \
-        4 times the byte length of val */                                 \
-    char tmp[sizeof(val) * 4] = {0};                                      \
-    /* Handle hex prefix */                                               \
-    if (base == 16) {                                                     \
-        /* Write the hex prefix */                                        \
-        str[0] = '0';                                                     \
-        str[1] = 'x';                                                     \
-        /* Convert to string */                                           \
-        itoa((int_t)val, (char *)&tmp, base);                             \
-        /* Pad leading zeroes */                                          \
-        for (i = 0; i < sizeof(val) - strlen(tmp); i++) str[2 + i] = '0'; \
-        /* Copy temp to after the prefix */                               \
-        memcpy((mem_ptr_u8_t)&str[2 + i], tmp, strlen(tmp));              \
-        /* Handle octal prefix */                                         \
-    } else if (base == 8) {                                               \
-        /* Octal prefix is just '0' */                                    \
-        str[0] = '0';                                                     \
-        itoa((int_t)val, (char *)&str[1], base);                          \
-    } else {                                                              \
-        /* Otherwise just print without prefix */                         \
-        itoa((int_t)val, (char *)&str, base);                             \
-    }
-
-#define VGA_PRINT_NUM(val, base)               \
-    /* Worst case (binary), the string will be \
-        4 times the byte length of val */      \
-    char str[sizeof(val) * 4] = {0};           \
-    VGA_PRINT_NUM_ADD_PREFIX(str, base, val);  \
-    vga_print((char *)&str);
+uint8_t vga_has_initialized = 0;
 
 /* VGA base address */
-vga_mem_ptr_t vga_mem = (uint8_t *)VGA_MEM_LOW;
+char *vga_mem = (char *)VGA_MEM_LOW;
 
 /* The current position of the cursor, contains an x and y value, see vga.h */
 vga_cursor_pos_t vga_cursor_pos = {0, 0};
 
 void vga_init() {
+    vga_has_initialized = 1;
+    log_putchar = vga_putchar;
+
     /* Disable the hardware cursor*/
     port_byte_out(VGA_CTRL_REG, 0x0A);
     port_byte_out(VGA_DATA_REG, 0x20);
     /* Clear the screen */
     vga_clear_screen();
-    /* Write to VGA (and serial if enabled) that VGA has been initalized */
-    vga_log("vga init\n");
 }
 
 void vga_clear_screen() {
@@ -68,8 +39,8 @@ void vga_clear_screen() {
 void vga_scroll_line() {
     /* Iterate over every row and memcpy it to the row before it */
     for (count32_t i = 1; i < VGA_MAX_ROWS; i++) {
-        memcpy((uint8_t *)(VGA_MEM_LOW + 2 * VGA_X_Y_TO_OFFSET(0, i - 1)),
-               (void *)(VGA_MEM_LOW + 2 * VGA_X_Y_TO_OFFSET(0, i)),
+        memcpy((char *)((size_t)VGA_MEM_LOW + 2 * VGA_X_Y_TO_OFFSET(0, i - 1)),
+               (void *)((size_t)VGA_MEM_LOW + 2 * VGA_X_Y_TO_OFFSET(0, i)),
                2 * VGA_MAX_COLS);
     }
     /* Clear the bottom row */
@@ -84,6 +55,7 @@ void vga_scroll_line() {
 }
 
 void vga_print_char(char c, char attr) {
+    if (vga_has_initialized == 0) return;
     /* If the attribute is 0 (black on black), set it to white on black */
     if (!attr)
         attr = VGA_COL_FOREGROUND_WHITE |
@@ -122,6 +94,8 @@ void vga_print_char(char c, char attr) {
     }
     /* If the offset is past the end of the screen, scroll */
     if (off >= VGA_MAX_ROWS * VGA_MAX_COLS) vga_scroll_line();
+
+/* If serial logging is enabled, then also write the character to serial */
 #if LOG_TO_SERIAL == 1
     serial_write(c);
 #endif
@@ -136,20 +110,25 @@ void vga_print_color(char *s, uint8_t attr) {
         /* Print the character, and increase i */
         vga_print_char(s[i++], attr);
     }
-    /* If serial logging is enabled, then also write the message to serial */
 }
 
+/* Print a string defaulting to white text on black */
 void vga_print(char *s) {
     vga_print_color(s, VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_WHITE);
 }
 
+/* Print a character defaulting to white text on black */
 void vga_putchar(char c) {
     vga_print_char(c, VGA_COL_BACKGROUND_BLACK | VGA_COL_FOREGROUND_WHITE);
 }
 
+/* Print formatted string s to vga */
 void vga_printf(const char *s, ...) {
+    if (vga_has_initialized == 0) return;
+    /* Standard va_list setup */
     va_list(ap);
     va_start(ap, s);
+    /* Call vsprintf with the va_list and the string with format tags */
     vsprintf(NULL, vga_putchar, s, ap);
     va_end(ap);
 }
@@ -165,7 +144,7 @@ void vga_log(char *s) {
     vga_print(s);
 }
 
-void vga_print_from_address(mem_ptr_t addr, count_t cnt) {
+void vga_print_from_address(void *addr, count_t cnt) {
     /* Iterate over `cnt` bytes starting at address `addr`*/
     for (count_t i = 0; i < cnt; i++) {
         vga_printf("%#02x", *((u8 *)((u64)addr + i)));

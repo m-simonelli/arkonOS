@@ -20,8 +20,6 @@
 
 /* typedefs */
 typedef unsigned short vga_screen_size_t;
-typedef unsigned char vga_cursor_scanline_t;
-typedef uint8_t *vga_mem_ptr_t;
 
 /* Struct for storing cursor position */
 typedef struct vga_cursor_pos {
@@ -66,8 +64,28 @@ typedef struct vga_cursor_pos {
 #define VGA_COL_BACKGROUND_YELLOW 0xe0
 #define VGA_COL_BACKGROUND_WHITE 0xf0
 
+/*!
+    @function vga_putchar
+    Write character `c` to vga with default attributes (white on black)
+
+    @param c
+    The character to be printed
+!*/
 void vga_putchar(char c);
+
+/*!
+    @function vga_printf
+    Send formatted null terminated string to vga
+
+    @param s
+    A null terminated string to be printed to vga. Optionally this can
+    contain embedded format tags that will be replaced by additional
+    arguments provided to the function. The format tags are in the format
+    %<flags><width><length><specifier>. Possible values for all fields of
+    the format tag are described in <libc/printf.h>
+!*/
 void vga_printf(const char *s, ...);
+
 /*!
     @function vga_print
     Print null terminated string `s` to vga
@@ -142,5 +160,5 @@ void vga_scroll_line();
     @param cnt
     The amount of bytes to print
 !*/
-void vga_print_from_address(mem_ptr_t addr, count_t cnt);
+void vga_print_from_address(void *addr, count_t cnt);
 #endif /* _drivers_vga_h */

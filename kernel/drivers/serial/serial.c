@@ -1,6 +1,6 @@
 #include <drivers/serial/serial.h>
 #include <drivers/serial/uart.h>
-#include <drivers/vga/vga.h>
+#include <k_log.h>
 
 char serial_read() {
     /* wait until data can be read */
@@ -40,11 +40,11 @@ void serial_init() {
     uart_modem_enable_rts();
     /* enable aux output 2 bit */
     uart_modem_enable_ao2();
-    /* write to VGA */
-    vga_log("serial init\n");
+    /* log to output */
+    k_log("serial init\n");
 }
 
-void serial_print(mem_ptr_char_t serial_msg) {
-    count_t i = 0;
-    while (serial_msg[i]) serial_write(serial_msg[i++]);
+void serial_print(const char *restrict serial_msg) {
+    /* Write each char until null terminator */
+    for (count_t i = 0; serial_msg[i] != 0; i++) serial_write(serial_msg[i]);
 }
