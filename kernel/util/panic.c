@@ -42,9 +42,7 @@ __attribute__((noreturn)) void _panic(char *pmsg, ...) {
     vga_printf("CR2: %#0*llx\n", 16, p_regs.cr2);
     vga_printf("CR3: %#0*llx\n", 16, p_regs.cr3);
 #else  /* !KERN_TARGET_x86_64 */
-    /*
-        TODO: 32 bit panic reg dumping
-    */
+    /* TODO: 32 bit panic reg dumping */
 #endif /* KERN_TARGET_x86_64 */
     vsprintf(NULL, log_putchar, "*****END PANIC*****", NULL);
     va_end(ap);

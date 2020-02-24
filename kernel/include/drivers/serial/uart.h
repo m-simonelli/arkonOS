@@ -1,8 +1,6 @@
 #ifndef _drivers_serial_uart_h
 #define _drivers_serial_uart_h
-/*
-    TODO: probe to check the address of com ports
-*/
+/* TODO: probe to check the address of com ports */
 #include <conf.h>
 #include <drivers/io/ports.h>
 #include <inttypes.h>

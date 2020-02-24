@@ -1,7 +1,5 @@
 #include <drivers/serial/uart.h>
-/*
-TODO: Check for COM port addresses instead of relying on hardcoded
-*/
+/* TODO: Check for COM port addresses instead of relying on hardcoded ones */
 port_t COM1 = 0x3F8;
 port_t COM2 = 0x2F8;
 
