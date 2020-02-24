@@ -1,5 +1,6 @@
 #include <k_log.h>
 #include <mem/pmm.h>
+#include <mem/e820.h>
 #include <mem/string.h>
 #include <panic.h>
 
@@ -23,6 +24,9 @@ uint_t bitmap_paddr;
 
 #define round_up(val, denom) \
     ((((u64)val + (u64)denom - 1) / (u64)denom) * (u64)denom)
+
+#define round_down(val, denom)  \
+    ((((u64)val) / (u64)denom) * (u64)denom)
 
 void pmm_free_block(uint_t blk) { bitmap_cbit(bitmap_vaddr, blk); }
 
@@ -75,5 +79,24 @@ void init_pmm(size_t mem_size) {
     for (size_t i = 0;
          i < round_up(bitmap_paddr + bitmap_size, PAGE_SIZE) / PAGE_SIZE; i++) {
         pmm_alloc_block();
+    }
+
+    /* Mark all unusable pages reported by e820 */
+    for (size_t i = 0; i < used_e820_entries; i++){        
+        if(e820_entries[i].type != E820_USEABLE){
+            /* Only handle when the type is not 
+             * useable (ignore ACPI reclaimable) */
+            size_t page_aligned_start = round_down(e820_entries[i].base, PAGE_SIZE);
+            size_t page_aligned_end = round_up(e820_entries[i].end, PAGE_SIZE);
+            size_t start_page = page_aligned_start/PAGE_SIZE;
+            
+            /* Mark all the pages used by this section as used */
+            for (size_t j = 0; j < round_up(page_aligned_end - page_aligned_start, PAGE_SIZE)/PAGE_SIZE; j++){
+                bitmap_sbit(
+                    bitmap_vaddr,
+                    (start_page+j)
+                );
+            }
+        }
     }
 }

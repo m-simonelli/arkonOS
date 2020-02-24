@@ -57,5 +57,6 @@ size_t get_total_e820_size();
 extern void *e820_map_addr;
 extern e820_entry_t e820_entries[E820_MAX];
 extern size_t total_e820_size;
+extern size_t used_e820_entries;
 
 #endif /* _mem_e820_h */

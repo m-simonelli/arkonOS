@@ -20,10 +20,12 @@ char *e820_region_type_strings[] = {"Unknown (0)",
 void *e820_map_addr = NULL;
 e820_entry_t e820_entries[E820_MAX] = {0};
 size_t total_e820_size;
+size_t used_e820_entries = 0;
 
 void init_e820(void *e820_addr) {
     /* Iterate over all entries and log them to VGA */
     for (count_t i = 0; i < *((dword_t *)e820_addr); i++) {
+        used_e820_entries++;
         /* Store each entry in an array */
         e820_entries[i] =
             (e820_entry_t){.base = *(uint64_t *)(e820_addr + 4 + (24 * i)),
