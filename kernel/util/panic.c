@@ -1,14 +1,14 @@
 #include <drivers/vga/vga.h>
+#include <k_log.h>
 #include <libc/printf.h>
 #include <panic.h>
 #include <stddef.h>
-#include <k_log.h>
 
 /* Allocate this at compile-time so that in the event of no memory left,
  * we can still print regs */
 struct panic_dump p_regs = {0};
 
-void _panic_printf(char *msg, ...){
+void _panic_printf(char *msg, ...) {
     va_list(ap);
     va_start(ap, msg);
     vsprintf(NULL, log_putchar, msg, ap);
@@ -35,7 +35,6 @@ __attribute__((noreturn)) void _panic(char *pmsg, ...) {
 
     _panic_printf("RSP: %#0*llx\n", 16, p_regs.sp);
     _panic_printf("RBP: %#0*llx\n", 16, p_regs.bp);
-
 
     _panic_printf("R8: %#0*llx\n", 16, p_regs.r8);
     _panic_printf("R9: %#0*llx\n", 16, p_regs.r9);

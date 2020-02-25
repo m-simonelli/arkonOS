@@ -1,7 +1,7 @@
-#include <k_log.h>
 #include <drivers/io/ports.h>
 #include <drivers/vga/vga.h>
 #include <inttypes.h>
+#include <k_log.h>
 #include <libc/printf.h>
 #include <libc/stdarg.h>
 #include <mem/memcpy.h>
@@ -147,6 +147,6 @@ void vga_log(char *s) {
 void vga_print_from_address(void *addr, count_t cnt) {
     /* Iterate over `cnt` bytes starting at address `addr`*/
     for (count_t i = 0; i < cnt; i++) {
-        vga_printf("%#02x", *((u8 *)((u64)addr + i)));
+        vga_printf("%#02x", *((uint8_t *)((uint64_t)addr + i)));
     }
 }

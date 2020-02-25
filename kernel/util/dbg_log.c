@@ -7,7 +7,7 @@
 void (*log_putchar)(char) = NULL;
 
 void dbg_log(const char *func, ssize_t line, char *msg, ...) {
-    if(func && line > 0){
+    if (func && line > 0) {
         char ln[256] = {0};
 
         if (log_putchar == NULL)

@@ -8,7 +8,7 @@ vaddr_info_t vaddr_to_paddr(vaddr_t vaddr) {
     vaddr_info_t ret = {0};
     ret.vaddr = vaddr;
 
-    ret.pml4 = (paddr_t *)((u64)&PML4 - KERN_VADDR);
+    ret.pml4 = (paddr_t *)((uint64_t)&PML4 - KERN_VADDR);
     ret.pml4_idx = (vaddr >> 39) & 0x1FF;
     pml4_entry = ret.pml4[ret.pml4_idx];
     ret.pml4_attr = pml4_entry & PAGE_FLAG_BITS;

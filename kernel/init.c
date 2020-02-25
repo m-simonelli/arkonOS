@@ -1,7 +1,7 @@
-#include <k_log.h>
 #include <drivers/serial/serial.h>
 #include <drivers/vga/vga.h>
 #include <inttypes.h>
+#include <k_log.h>
 #include <libc/printf.h>
 #include <mem/e820.h>
 #include <mem/pmm.h>
@@ -11,8 +11,7 @@ void kmain() {
     /* Initialize VGA */
     vga_init();
 
-    k_printf("Welcome to ArkonOS, compiled on %s at %s\n",
-            __DATE__, __TIME__);
+    k_printf("Welcome to ArkonOS, compiled on %s at %s\n", __DATE__, __TIME__);
     /* Initalize serial I/O */
     serial_init();
 

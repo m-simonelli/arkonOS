@@ -21,30 +21,16 @@ typedef uint64_t count64_t;
 
 typedef size_t count_t;
 
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-#ifdef KERN_TARGET_x86_64
-typedef uint64_t u64;
-#endif /* KERN_TARGET_x86_64 */
-
-typedef int8_t i8;
-typedef int16_t i16;
-typedef int32_t i32;
-#ifdef KERN_TARGET_x86_64
-typedef int64_t i64;
-#endif /* KERN_TARGET_x86_64 */
-
 typedef ssize_t int_t;
 typedef size_t uint_t;
 
 typedef void* symbol[];
 
-typedef u8 byte_t;
-typedef u16 word_t;
-typedef u32 dword_t;
+typedef uint8_t byte_t;
+typedef uint16_t word_t;
+typedef uint32_t dword_t;
 #ifdef KERN_TARGET_x86_64
-typedef u64 qword_t;
+typedef uint64_t qword_t;
 #endif /* KERN_TARGET_x86_64 */
 
 typedef count_t iterator_t;

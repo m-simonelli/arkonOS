@@ -1,6 +1,6 @@
 #include <k_log.h>
-#include <mem/pmm.h>
 #include <mem/e820.h>
+#include <mem/pmm.h>
 #include <mem/string.h>
 #include <panic.h>
 
@@ -10,7 +10,7 @@
 #define BLOCK_SIZE PAGE_SIZE
 /* Handy macro to calculate bitmap size */
 #define BITMAP_SIZE(mem_size) (mem_size / PAGE_SIZE / 8)
-#define BYTES_TO_PAGES(bytes) (((u64)bytes + (PAGE_SIZE - 1)) / PAGE_SIZE)
+#define BYTES_TO_PAGES(bytes) (((uint64_t)bytes + (PAGE_SIZE - 1)) / PAGE_SIZE)
 
 size_t bitmap_size;
 uint_t bitmap_vaddr;
@@ -22,11 +22,12 @@ uint_t bitmap_paddr;
 
 #include <conf.h>
 
-#define round_up(val, denom) \
-    ((((u64)val + (u64)denom - 1) / (u64)denom) * (u64)denom)
+#define round_up(val, denom)                                     \
+    ((((uint64_t)val + (uint64_t)denom - 1) / (uint64_t)denom) * \
+     (uint64_t)denom)
 
-#define round_down(val, denom)  \
-    ((((u64)val) / (u64)denom) * (u64)denom)
+#define round_down(val, denom) \
+    ((((uint64_t)val) / (uint64_t)denom) * (uint64_t)denom)
 
 void pmm_free_block(uint_t blk) { bitmap_cbit(bitmap_vaddr, blk); }
 
@@ -54,7 +55,7 @@ void init_pmm(size_t mem_size) {
     bitmap_vaddr = round_up(kern_end, PD_HUGE_PAGE_SIZE);
     bitmap_paddr = round_up((size_t)kern_end - KERN_VADDR, PAGE_SIZE);
     k_log("PMM bitmap will be located at v:%#0*llx p:%#0*llx\n", 16,
-            bitmap_vaddr, 16, bitmap_paddr);
+          bitmap_vaddr, 16, bitmap_paddr);
 
     /* Write the phys address of the bitmap to the page tables (PML1) */
     uint_t pmm_pt_cur_addr = bitmap_paddr | 0x3;
@@ -65,7 +66,7 @@ void init_pmm(size_t mem_size) {
     }
 
     /* Write the address of PT to the second entry of the page directory */
-    PD[1] = ((u64)PT - KERN_VADDR) | 0x3;
+    PD[1] = ((uint64_t)PT - KERN_VADDR) | 0x3;
 
     /* Write the physical address of the bitmap to the page table */
     PT[(bitmap_vaddr >> 12) & 0x1FF] = bitmap_paddr | 0x3;
@@ -82,20 +83,21 @@ void init_pmm(size_t mem_size) {
     }
 
     /* Mark all unusable pages reported by e820 */
-    for (size_t i = 0; i < used_e820_entries; i++){        
-        if(e820_entries[i].type != E820_USEABLE){
-            /* Only handle when the type is not 
+    for (size_t i = 0; i < used_e820_entries; i++) {
+        if (e820_entries[i].type != E820_USEABLE) {
+            /* Only handle when the type is not
              * useable (ignore ACPI reclaimable) */
-            size_t page_aligned_start = round_down(e820_entries[i].base, PAGE_SIZE);
+            size_t page_aligned_start =
+                round_down(e820_entries[i].base, PAGE_SIZE);
             size_t page_aligned_end = round_up(e820_entries[i].end, PAGE_SIZE);
-            size_t start_page = page_aligned_start/PAGE_SIZE;
-            
+            size_t start_page = page_aligned_start / PAGE_SIZE;
+
+            size_t section_page_count =
+                round_up(page_aligned_end - page_aligned_start, PAGE_SIZE) /
+                PAGE_SIZE;
             /* Mark all the pages used by this section as used */
-            for (size_t j = 0; j < round_up(page_aligned_end - page_aligned_start, PAGE_SIZE)/PAGE_SIZE; j++){
-                bitmap_sbit(
-                    bitmap_vaddr,
-                    (start_page+j)
-                );
+            for (size_t j = 0; j < section_page_count; j++) {
+                bitmap_sbit(bitmap_vaddr, (start_page + j));
             }
         }
     }

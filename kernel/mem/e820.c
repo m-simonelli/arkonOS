@@ -1,5 +1,5 @@
-#include <mem/e820.h>
 #include <k_log.h>
+#include <mem/e820.h>
 
 /*  The "unknown" strings are so that the corresponding string
     can be addressed by the type value given in the e820 entry  */
@@ -36,8 +36,7 @@ void init_e820(void *e820_addr) {
         /* Print the entry */
         k_log("start: %#08llx", e820_entries[i].base);
         k_printf("\tlength: %#08llx", e820_entries[i].length);
-        k_printf("\ttype: %s",
-                   e820_region_type_strings[e820_entries[i].type]);
+        k_printf("\ttype: %s", e820_region_type_strings[e820_entries[i].type]);
         k_printf("\n");
     }
     total_e820_size = get_total_e820_size();

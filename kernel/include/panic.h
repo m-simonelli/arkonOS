@@ -10,10 +10,10 @@ extern struct panic_dump p_regs;
 
 extern void _panic_save_regs_to_p_regs();
 
-#define panic(msg, ...)              \
-    do {                             \
+#define panic(msg, ...)               \
+    do {                              \
         _panic_save_regs_to_p_regs(); \
-        _panic(msg, ##__VA_ARGS__);  \
+        _panic(msg, ##__VA_ARGS__);   \
     } while (0);
 
 struct panic_dump {
