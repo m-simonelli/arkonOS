@@ -1,3 +1,10 @@
+/*
+ *  uart.c
+ *  Copyright Marco Simonelli 2020
+ *  You are free to redistribute/modify this code under the 
+ *  terms of the GPL version 3 (see the file LICENSE)
+ */
+
 #include <drivers/serial/uart.h>
 /* TODO: Check for COM port addresses instead of relying on hardcoded ones */
 port_t COM1 = 0x3F8;

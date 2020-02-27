@@ -1,3 +1,7 @@
+; error.asm
+; Copyright Marco Simonelli 2020
+; You are free to redistribute/modify this code under the 
+; terms of the GPL version 3 (see the file LICENSE)
 
 %ifndef _error_asm
 %define _error_asm

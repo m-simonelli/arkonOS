@@ -1,3 +1,10 @@
+/*
+ *  uart.h
+ *  Copyright Marco Simonelli 2020
+ *  You are free to redistribute/modify this code under the 
+ *  terms of the GPL version 3 (see the file LICENSE)
+ */
+
 #ifndef _drivers_serial_uart_h
 #define _drivers_serial_uart_h
 /* TODO: probe to check the address of com ports */

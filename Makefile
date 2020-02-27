@@ -1,3 +1,8 @@
+#  Makefile
+#  Copyright Marco Simonelli 2020
+#  You are free to redistribute/modify this code under the 
+#  terms of the GPL version 3 (see the file LICENSE)
+
 #i386/mips
 PLATFORM=i386
 KERN_PLATFORM=x86_64

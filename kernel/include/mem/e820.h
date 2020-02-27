@@ -1,3 +1,10 @@
+/*
+ *  e820.h
+ *  Copyright Marco Simonelli 2020
+ *  You are free to redistribute/modify this code under the 
+ *  terms of the GPL version 3 (see the file LICENSE)
+ */
+
 #ifndef _mem_e820_h
 #define _mem_e820_h
 

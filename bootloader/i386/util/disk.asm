@@ -1,3 +1,8 @@
+; disk.asm
+; Copyright Marco Simonelli 2020
+; You are free to redistribute/modify this code under the 
+; terms of the GPL version 3 (see the file LICENSE)
+
 %include "util/err/error_codes.asm"
 %include "util/err/error.asm"
 ; read sectors from drive 0x80 (drive 0) with address packet ds:si

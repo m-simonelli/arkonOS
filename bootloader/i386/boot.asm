@@ -1,3 +1,8 @@
+; boot.asm
+; Copyright Marco Simonelli 2020
+; You are free to redistribute/modify this code under the 
+; terms of the GPL version 3 (see the file LICENSE)
+
 [org 0x7c00]
 %include "kern_info.asm"
 ; before all includes so that this runs first

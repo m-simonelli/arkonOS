@@ -1,3 +1,8 @@
+; gdt.inc
+; Copyright Marco Simonelli 2020
+; You are free to redistribute/modify this code under the 
+; terms of the GPL version 3 (see the file LICENSE)
+
 %ifndef _kernel_arch_x86_64_gdt_inc
 %define _kernel_arch_x86_64_gdt_inc
 

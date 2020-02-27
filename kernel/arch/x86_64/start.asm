@@ -1,3 +1,8 @@
+; start.asm
+; Copyright Marco Simonelli 2020
+; You are free to redistribute/modify this code under the 
+; terms of the GPL version 3 (see the file LICENSE)
+
 %include "bootloader/i386/kern_info.asm"
 %include "kernel/arch/x86_64/gdt.inc"
 global k_start
@@ -6,6 +11,10 @@ global halt
 [extern kmain]
 [extern bss_begin]
 [extern bss_end]
+
+; TODO:
+; Check VGA is supported by the graphics card before using it
+
 [extern e820_map_addr]
 
 [extern do_e820_mem_map]

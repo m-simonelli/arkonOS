@@ -1,3 +1,8 @@
+; call_real.asm
+; Copyright Marco Simonelli 2020
+; You are free to redistribute/modify this code under the 
+; terms of the GPL version 3 (see the file LICENSE)
+
 ; assume long mode
 global call_real
 %include "bootloader/i386/kern_info.asm"

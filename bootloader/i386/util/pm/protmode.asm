@@ -1,3 +1,8 @@
+; protmode.asm
+; Copyright Marco Simonelli 2020
+; You are free to redistribute/modify this code under the 
+; terms of the GPL version 3 (see the file LICENSE)
+
 %include "gdt.asm"
 %include "util/err/error.asm"
 %include "util/err/error_codes.asm"
