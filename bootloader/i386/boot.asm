@@ -41,9 +41,16 @@ load_kernel:
     xor eax, eax
     mov edx, 1
 .read_loop:
+    push bx
+    mov bx, [seg_count]
+    inc bx
+    mov [seg_count], bx
+    pop bx
     ; set ds:si to where the disk address packet is
     mov esi, da_packet
+    ;push edx
     call disk_read
+    ;pop edx
     ; this will break if blknum doesn't fit in a dword, i'll assume that never
     ; happens 
     mov eax, [da_packet.blknum]
@@ -58,6 +65,7 @@ load_kernel:
     inc edx
     cmp edx, KERN_SECTOR_COUNT
     jb .read_loop
+.done:
     pop es
     pop ds
     popa

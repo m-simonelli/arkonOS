@@ -1,7 +1,7 @@
 /*
  *  pmm.c
  *  Copyright Marco Simonelli 2020
- *  You are free to redistribute/modify this code under the 
+ *  You are free to redistribute/modify this code under the
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
@@ -11,10 +11,6 @@
 #include <mem/string.h>
 #include <panic.h>
 
-/* How big pages are */
-#define PAGE_SIZE 0x1000
-#define PD_HUGE_PAGE_SIZE (PAGE_SIZE * 0x200)
-#define BLOCK_SIZE PAGE_SIZE
 /* Handy macro to calculate bitmap size */
 #define BITMAP_SIZE(mem_size) (mem_size / PAGE_SIZE / 8)
 #define BYTES_TO_PAGES(bytes) (((uint64_t)bytes + (PAGE_SIZE - 1)) / PAGE_SIZE)

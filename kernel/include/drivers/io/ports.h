@@ -1,7 +1,7 @@
 /*
  *  ports.h
  *  Copyright Marco Simonelli 2020
- *  You are free to redistribute/modify this code under the 
+ *  You are free to redistribute/modify this code under the
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
@@ -59,4 +59,10 @@ port_word_t port_word_in(port_t port);
     One word to be written to port `port`
 !*/
 void port_word_out(port_t port, port_word_t data);
+
+/*!
+    @function io_wait
+    Force the CPU to wait for the current I/O to finish
+!*/
+void io_wait();
 #endif /* _drivers_io_ports_h */

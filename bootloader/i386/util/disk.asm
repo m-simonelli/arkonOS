@@ -8,6 +8,7 @@
 ; read sectors from drive 0x80 (drive 0) with address packet ds:si
 disk_read:
     pusha
+    clc
     mov dl, 0x80
     mov cx, [da_packet.blkcnt]
     mov ah, 0x42
@@ -27,6 +28,7 @@ disk_error:
     mov al, ah
     mov ah, 0
     mov bx, disk_error_string
+    mov al, [seg_count]
     jmp error
 
 sector_error:
@@ -50,3 +52,5 @@ da_packet:
 .bufseg:    dw 0x2000   ; transfer buffer segment
 .blknum:    dd 1    ; starting block number
 .blknumhi:  dd 0
+
+seg_count: dd 0

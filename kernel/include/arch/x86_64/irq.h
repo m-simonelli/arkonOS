@@ -1,14 +1,13 @@
 /*
- *  limits.h
+ *  irq.h
  *  Copyright Marco Simonelli 2020
  *  You are free to redistribute/modify this code under the
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _kern_limits_h
-#define _kern_limits_h
+#ifndef _arch_x86_64_irq_h
+#define _arch_x86_64_irq_h
 
-#define INT_MIN (-INT_MAX - 1)
-#define INT_MAX 2147483647
+#include <arch/x86_64/exception.h>
 
-#endif /* _kern_limits_h */
+#endif

@@ -143,7 +143,7 @@ goto_kmain:
     mov rdi, 0x8800
     call do_e820_mem_map
     mov word [e820_map_addr], 0x8800
-    ; can't directly call addresses >2GiB from rip
+    ; can't directly call addresses >2GiB
     ; move address into register and call the register
     mov rax, kmain
     call rax

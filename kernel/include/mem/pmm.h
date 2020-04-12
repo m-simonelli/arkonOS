@@ -1,7 +1,7 @@
 /*
  *  pmm.h
  *  Copyright Marco Simonelli 2020
- *  You are free to redistribute/modify this code under the 
+ *  You are free to redistribute/modify this code under the
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
@@ -11,6 +11,11 @@
 #include <conf.h>
 #include <inttypes.h>
 #include <mem/e820.h>
+
+/* How big pages are */
+#define PAGE_SIZE 0x1000
+#define PD_HUGE_PAGE_SIZE (PAGE_SIZE * 0x200)
+#define BLOCK_SIZE PAGE_SIZE
 
 /*!
     @function init_pmm

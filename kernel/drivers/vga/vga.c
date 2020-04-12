@@ -1,7 +1,7 @@
 /*
  *  vga.c
  *  Copyright Marco Simonelli 2020
- *  You are free to redistribute/modify this code under the 
+ *  You are free to redistribute/modify this code under the
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
@@ -76,6 +76,13 @@ void vga_print_char(char c, char attr) {
 
         /* Calculate the offset */
         off = VGA_X_Y_TO_OFFSET(vga_cursor_pos.x, vga_cursor_pos.y);
+    } else if (c == '\b') {
+        /* Decrement cursor x on backspace */
+        vga_cursor_pos.x -= 1;
+        off = VGA_X_Y_TO_OFFSET(vga_cursor_pos.x, vga_cursor_pos.y);
+
+        vga_mem[2 * off] = 0;
+        vga_mem[2 * off + 1] = 0;
     } else {
         /* Calculate the offset */
         off = VGA_X_Y_TO_OFFSET(vga_cursor_pos.x, vga_cursor_pos.y);

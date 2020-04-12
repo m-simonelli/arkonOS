@@ -1,14 +1,10 @@
 /*
- *  limits.h
+ *  isr.c
  *  Copyright Marco Simonelli 2020
  *  You are free to redistribute/modify this code under the
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _kern_limits_h
-#define _kern_limits_h
+#include <arch/x86_64/isr.h>
 
-#define INT_MIN (-INT_MAX - 1)
-#define INT_MAX 2147483647
-
-#endif /* _kern_limits_h */
+isr_handler_t int_handlers[IDT_ENTRIES] = {0};

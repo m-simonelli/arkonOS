@@ -1,10 +1,12 @@
 /*
  *  init.c
  *  Copyright Marco Simonelli 2020
- *  You are free to redistribute/modify this code under the 
+ *  You are free to redistribute/modify this code under the
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
+#include <arch/x86_64/idt.h>
+#include <drivers/io/kb.h>
 #include <drivers/serial/serial.h>
 #include <drivers/vga/vga.h>
 #include <inttypes.h>
@@ -27,4 +29,10 @@ void kmain() {
 
     /* init physical memory manager with the size that we got from e820 */
     init_pmm(total_e820_size);
+
+    init_idt();
+    __asm__ __volatile__("int $2");
+    __asm__ __volatile__("int $3");
+
+    init_keyboard();
 }

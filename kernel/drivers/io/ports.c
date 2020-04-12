@@ -1,7 +1,7 @@
 /*
  *  ports.c
  *  Copyright Marco Simonelli 2020
- *  You are free to redistribute/modify this code under the 
+ *  You are free to redistribute/modify this code under the
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 #include <drivers/io/ports.h>
@@ -39,3 +39,8 @@ Write 1 word (2 bytes) `data` to port `port`
 void port_word_out(port_t port, port_word_t data) {
     __asm__("out %%ax, %%dx" : : "d"(port), "a"(data));
 }
+
+/*
+Force the CPU to wait for the current I/O to finish
+*/
+void io_wait() { port_byte_out(0x80, 0); }

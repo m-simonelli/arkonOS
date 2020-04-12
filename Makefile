@@ -68,11 +68,12 @@ KERN_QEMU_DEBUG_PORT_ENABLED=1
 #to reflect the changes
 KERN_VIRT_ADDR=0xFFFFFFFFC0000000
 
-KERN_SECTOR_COUNT=wc -c < kernel.bin | awk '{printf("%.0f\n", ($$1+511)/512+1)}'
+KERN_SECTOR_COUNT=wc -c < kernel.bin | awk '{printf("%.0f\n", ($$1+511)/512)}'
 
 KERN_INCLUDE_DIR=kernel/include
 KERN_HEADERS=		$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
 					$(KERN_INCLUDE_DIR)/drivers/vga/vga.h		\
+					$(KERN_INCLUDE_DIR)/drivers/io/kb.h			\
 					$(KERN_INCLUDE_DIR)/drivers/serial/uart.h	\
 					$(KERN_INCLUDE_DIR)/drivers/serial/serial.h	\
 					$(KERN_INCLUDE_DIR)/libc/printf.h			\
@@ -90,10 +91,19 @@ KERN_HEADERS=		$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
 					$(KERN_INCLUDE_DIR)/util/ascii_tools.h		\
 					$(KERN_INCLUDE_DIR)/panic.h					\
 					$(KERN_INCLUDE_DIR)/k_log.h					\
-					$(KERN_INCLUDE_DIR)/conf.h
+					$(KERN_INCLUDE_DIR)/kcmd.h					\
+					$(KERN_INCLUDE_DIR)/conf.h					\
+					$(KERN_INCLUDE_DIR)/arch/x86_64/8259_pic.h	\
+					$(KERN_INCLUDE_DIR)/arch/x86_64/exception.h	\
+					$(KERN_INCLUDE_DIR)/arch/x86_64/idt.h		\
+					$(KERN_INCLUDE_DIR)/arch/x86_64/isr.h		\
+					$(KERN_INCLUDE_DIR)/arch/x86_64/irq.h
 
 KERN_SOURCE_DIR=kernel
-KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/drivers/io/ports.c		\
+KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/init.c					\
+					$(KERN_SOURCE_DIR)/kcmd.c					\
+					$(KERN_SOURCE_DIR)/drivers/io/ports.c		\
+					$(KERN_SOURCE_DIR)/drivers/io/kb.c			\
 					$(KERN_SOURCE_DIR)/drivers/vga/vga.c		\
 					$(KERN_SOURCE_DIR)/drivers/serial/uart.c	\
 					$(KERN_SOURCE_DIR)/drivers/serial/serial.c	\
@@ -109,14 +119,19 @@ KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/drivers/io/ports.c		\
 					$(KERN_SOURCE_DIR)/util/ascii_tools.c		\
 					$(KERN_SOURCE_DIR)/util/panic.c				\
 					$(KERN_SOURCE_DIR)/util/dbg_log.c			\
-					$(KERN_SOURCE_DIR)/init.c
+					$(KERN_ARCH_DIR)/idt.c						\
+					$(KERN_ARCH_DIR)/isr.c						\
+					$(KERN_ARCH_DIR)/irq.c						\
+					$(KERN_ARCH_DIR)/exception.c				\
+					$(KERN_ARCH_DIR)/8259_pic.c
 
 KERN_ARCH_DIR=kernel/arch/$(KERN_PLATFORM)
 KERN_ASM_SOURCES= 	$(KERN_ARCH_DIR)/start.asm					\
+					$(KERN_ARCH_DIR)/isr_handlers.asm			\
 					$(KERN_ARCH_DIR)/kernel_stub.asm			\
 					$(KERN_ARCH_DIR)/utils/e820.asm				\
 					$(KERN_ARCH_DIR)/utils/call_real.asm		\
-					$(KERN_SOURCE_DIR)/util/panic_64.asm		\
+					$(KERN_SOURCE_DIR)/util/panic_64.asm
 
 KERN_OBJECTS= 		${KERN_ASM_SOURCES:.asm=.o}					\
 					${KERN_C_SOURCES:.c=.o}
