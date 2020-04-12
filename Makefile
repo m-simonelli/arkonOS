@@ -3,6 +3,8 @@
 #  You are free to redistribute/modify this code under the 
 #  terms of the GPL version 3 (see the file LICENSE)
 
+VERSION=0.1.0-alpha
+
 #i386/mips
 PLATFORM=i386
 KERN_PLATFORM=x86_64
@@ -141,7 +143,7 @@ KERN_REAL_SOURCES=	$(KERN_ARCH_DIR)/utils/real/e820.real		\
 
 KERN_REAL_BINS=		${KERN_REAL_SOURCES:.real=.bin}
 
-OS_IMAGE_NAME=arkon
+OS_IMAGE_NAME=arkon-$(VERSION)
 
 CC_INCLUDE_DIRS=kernel/include/
 CC_FLAGS=	-I$(CC_INCLUDE_DIRS) 	\
@@ -282,6 +284,13 @@ debug-qemu: $(OS_IMAGE_NAME).bin
 debug-gdb: $(OS_IMAGE_NAME).bin kernel.elf
 	qemu-system-x86_64 $(QEMU_OPTIONS) -s -S -hda $(OS_IMAGE_NAME).bin &
 	$(GDB) -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
+
+dist: $(OS_IMAGE_NAME).bin
+	tar -czf $(OS_IMAGE_NAME).tar.gz --exclude *.tar.gz .
+	tar -czf $^.tar.gz --exclude *.tar.gz $^
+
+distclean: clean
+	rm -f $(OS_IMAGE_NAME).tar.gz $(OS_IMAGE_NAME).bin.tar.gz
 
 crun: clean run
 cbuild: clean $(OS_IMAGE_NAME).bin
