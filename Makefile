@@ -285,9 +285,13 @@ debug-gdb: $(OS_IMAGE_NAME).bin kernel.elf
 	qemu-system-x86_64 $(QEMU_OPTIONS) -s -S -hda $(OS_IMAGE_NAME).bin &
 	$(GDB) -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
-dist: $(OS_IMAGE_NAME).bin
-	tar -czf $(OS_IMAGE_NAME).tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore .
-	tar -czf $^.tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore $^
+sourcedist: distclean
+	tar -czf $(OS_IMAGE_NAME).tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore --exclude .DS_Store .
+
+builddist: $(OS_IMAGE_NAME).bin
+	tar -czf $(OS_IMAGE_NAME).bin.tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore --exclude .DS_Store $(OS_IMAGE_NAME).bin
+
+dist: sourcedist builddist
 
 distclean: clean
 	rm -f $(OS_IMAGE_NAME).tar.gz $(OS_IMAGE_NAME).bin.tar.gz
