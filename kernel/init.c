@@ -11,9 +11,11 @@
 #include <drivers/vga/vga.h>
 #include <inttypes.h>
 #include <k_log.h>
+#include <kcmd.h>
 #include <libc/printf.h>
 #include <mem/e820.h>
 #include <mem/pmm.h>
+#include <stddef.h>
 #include <util/ascii_tools.h>
 
 void kmain() {
@@ -35,4 +37,5 @@ void kmain() {
     __asm__ __volatile__("int $3");
 
     init_keyboard();
+    run_kcmd(NULL);
 }

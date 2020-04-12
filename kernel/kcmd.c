@@ -5,4 +5,6 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-void run_kcmd(char *cmd) {}
+#include <k_log.h>
+
+void run_kcmd(char *cmd) { kprintf("> "); }
