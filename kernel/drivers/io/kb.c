@@ -29,7 +29,7 @@ const char scancode_ascii[] = {
     'J', 'K', 'L',  ';', '\'', '`', '?', '\\', 'Z', 'X', 'C', 'V',
     'B', 'N', 'M',  ',', '.',  '/', '?', '?',  '?', ' '};
 
-void keyboard_callback(regs_t regs) {
+void keyboard_callback(regs_t regs __attribute__((unused))) {
     uint8_t sc = port_byte_in(0x60);
     if (sc > SC_MAX) return;
     if (sc == SC_ENTER) {
