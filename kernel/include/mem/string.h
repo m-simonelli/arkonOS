@@ -44,4 +44,6 @@ char *strcpy(char *dst, char const *src);
 !*/
 #define bzero(d, n) memset((void *)d, 0, n)
 
+int strcmp(const char *restrict s1, const char *restrict s2);
+
 #endif /* _mem_string_h */

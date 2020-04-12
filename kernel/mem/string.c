@@ -16,3 +16,12 @@ char *strcpy(char *dst, char const *src) {
     dst[i] = 0;
     return dst;
 }
+
+/* K&R */
+int strcmp(const char *restrict s1, const char *restrict s2){
+    int i;
+    for (i = 0; s1[i] == s2[i]; i++){
+        if(s1[i] == '\0') return 0;
+    }
+    return s1[i] - s2[i];
+}

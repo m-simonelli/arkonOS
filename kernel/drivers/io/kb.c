@@ -36,9 +36,14 @@ void keyboard_callback(regs_t regs) {
         kprintf("\n");
         run_kcmd((char *)&keybuf);
         bzero(keybuf, PAGE_SIZE);
+        current_input_size = 0;
     } else {
         char c = scancode_ascii[(int)sc];
-        keybuf[current_input_size++] = c;
+        if(sc != SC_BACKSPACE){
+            keybuf[current_input_size++] = c;
+        } else {
+            keybuf[--current_input_size] = '\0';
+        }
         kprintf("%c", c);
     }
 }

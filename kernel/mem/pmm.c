@@ -43,7 +43,7 @@ uint_t first_free_block() {
 void *pmm_alloc_block() {
     uint_t blk = first_free_block();
     bitmap_sbit(bitmap_vaddr, blk);
-    return (void *)blk;
+    return (void *)(blk * PAGE_SIZE);
 }
 
 void init_pmm(size_t mem_size) {

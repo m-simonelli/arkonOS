@@ -25,6 +25,7 @@
     The total size of RAM in bytes
 !*/
 void init_pmm(size_t mem_size);
+void *pmm_alloc_block();
 
 #define PAGE_TABLE_ENTRY_COUNT 512
 
