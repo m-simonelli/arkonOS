@@ -1,6 +1,7 @@
 0.1.0-alpha:
     - Remove useless metadata from version string
     - Add dist rule in makefile
+    - Fix keyboard callback unused warning
 
 0.1.0-alpha+001:
     - Initial build
