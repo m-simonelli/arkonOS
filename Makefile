@@ -286,8 +286,8 @@ debug-gdb: $(OS_IMAGE_NAME).bin kernel.elf
 	$(GDB) -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 dist: $(OS_IMAGE_NAME).bin
-	tar -czf $(OS_IMAGE_NAME).tar.gz --exclude *.tar.gz .
-	tar -czf $^.tar.gz --exclude *.tar.gz $^
+	tar -czf $(OS_IMAGE_NAME).tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore .
+	tar -czf $^.tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore $^
 
 distclean: clean
 	rm -f $(OS_IMAGE_NAME).tar.gz $(OS_IMAGE_NAME).bin.tar.gz
