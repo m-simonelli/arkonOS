@@ -22,7 +22,8 @@ void kmain() {
     /* Initialize VGA */
     vga_init();
 
-    k_printf("Welcome to ArkonOS 0.1.0-alpha, compiled on %s at %s\n", __DATE__, __TIME__);
+    k_printf("Welcome to ArkonOS 0.2.0-alpha, compiled on %s at %s\n", __DATE__,
+             __TIME__);
     /* Initalize serial I/O */
     serial_init();
 

@@ -3,7 +3,7 @@
 #  You are free to redistribute/modify this code under the 
 #  terms of the GPL version 3 (see the file LICENSE)
 
-VERSION=0.1.0-alpha
+VERSION=0.2.0-alpha
 
 #i386/mips
 PLATFORM=i386
@@ -286,15 +286,20 @@ debug-gdb: $(OS_IMAGE_NAME).bin kernel.elf
 	$(GDB) -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 sourcedist: distclean
-	tar -czf $(OS_IMAGE_NAME).tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore --exclude .DS_Store .
+	find . -type f -name '*.DS_Store' -delete
+	tar -czf $(OS_IMAGE_NAME).tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore --exclude *.DS_Store .
+	sha256sum $(OS_IMAGE_NAME).tar.gz > $(OS_IMAGE_NAME).tar.gz.sha256sum
 
 builddist: $(OS_IMAGE_NAME).bin
-	tar -czf $(OS_IMAGE_NAME).bin.tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore --exclude .DS_Store $(OS_IMAGE_NAME).bin
+	find . -type f -name '*.DS_Store' -delete
+	tar -czf $(OS_IMAGE_NAME).bin.tar.gz --exclude *.tar.gz --exclude .git --exclude .vscode --exclude .gitignore --exclude *.DS_Store $(OS_IMAGE_NAME).bin
+	sha256sum $(OS_IMAGE_NAME).bin.tar.gz > $(OS_IMAGE_NAME).bin.tar.gz.sha256sum
 
 dist: sourcedist builddist
 
 distclean: clean
 	rm -f $(OS_IMAGE_NAME).tar.gz $(OS_IMAGE_NAME).bin.tar.gz
+	rm -f $(OS_IMAGE_NAME).tar.gz.sha256sum $(OS_IMAGE_NAME).bin.tar.gz.sha256sum
 
 crun: clean run
 cbuild: clean $(OS_IMAGE_NAME).bin
