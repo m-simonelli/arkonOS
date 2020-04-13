@@ -24,7 +24,7 @@ void kmain() {
 
     k_printf("Welcome to ArkonOS 0.2.1-alpha, compiled on %s at %s\n", __DATE__,
              __TIME__);
-             
+
     /* Initalize serial I/O */
     serial_init();
 
