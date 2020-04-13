@@ -91,6 +91,7 @@ void keyboard_callback(regs_t regs __attribute__((unused))) {
         if (sc != SC_BACKSPACE) {
             keybuf[current_input_size++] = c;
         } else {
+            if (current_input_size == 0) return;
             keybuf[--current_input_size] = '\0';
         }
         kprintf("%c", c);

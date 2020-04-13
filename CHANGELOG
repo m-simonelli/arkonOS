@@ -1,7 +1,10 @@
+0.2.1-alpha:
+    - fix deleting past start of line
+    
 0.2.0-alpha:
     - add shift and capslock keyboard handling
     - add strcmp
-    
+
 0.1.0-alpha:
     - Remove useless metadata from version string
     - Add dist rule in makefile

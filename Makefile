@@ -3,9 +3,9 @@
 #  You are free to redistribute/modify this code under the 
 #  terms of the GPL version 3 (see the file LICENSE)
 
-VERSION=0.2.0-alpha
+VERSION=0.2.1-alpha
 
-#i386/mips
+#leave these as is, support for other platforms is planned
 PLATFORM=i386
 KERN_PLATFORM=x86_64
 
