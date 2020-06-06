@@ -6,8 +6,8 @@
  */
 
 #include <k_log.h>
-#include <mem/pmm.h>
-#include <mem/string.h>
+#include <mm/pmm.h>
+#include <string.h>
 
 void run_kcmd(char *cmd) {
     if (cmd) {

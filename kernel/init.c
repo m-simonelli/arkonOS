@@ -6,17 +6,17 @@
  */
 
 #include <arch/x86_64/idt.h>
-#include <drivers/io/kb.h>
-#include <drivers/serial/serial.h>
-#include <drivers/vga/vga.h>
+#include <devices/io/kb.h>
+#include <devices/io/serial/serial.h>
+#include <devices/display/vga/vga.h>
 #include <inttypes.h>
 #include <k_log.h>
 #include <kcmd.h>
-#include <libc/printf.h>
-#include <mem/e820.h>
-#include <mem/pmm.h>
+#include <printf.h>
+#include <mm/e820.h>
+#include <mm/pmm.h>
 #include <stddef.h>
-#include <util/ascii_tools.h>
+#include <klib.h>
 
 void kmain() {
     /* Initialize VGA */
@@ -35,9 +35,11 @@ void kmain() {
     init_pmm(total_e820_size);
 
     init_idt();
-    __asm__ __volatile__("int $2");
-    __asm__ __volatile__("int $3");
-
     init_keyboard();
+
+    kprintf(
+        "Type 'help' for a list of commands.\nAnything else typed will be "
+        "echoed back\n");
+    /* print a console line */
     run_kcmd(NULL);
 }

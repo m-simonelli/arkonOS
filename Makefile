@@ -73,58 +73,57 @@ KERN_VIRT_ADDR=0xFFFFFFFFC0000000
 KERN_SECTOR_COUNT=wc -c < kernel.bin | awk '{printf("%.0f\n", ($$1+511)/512)}'
 
 KERN_INCLUDE_DIR=kernel/include
-KERN_HEADERS=		$(KERN_INCLUDE_DIR)/drivers/io/ports.h		\
-					$(KERN_INCLUDE_DIR)/drivers/vga/vga.h		\
-					$(KERN_INCLUDE_DIR)/drivers/io/kb.h			\
-					$(KERN_INCLUDE_DIR)/drivers/serial/uart.h	\
-					$(KERN_INCLUDE_DIR)/drivers/serial/serial.h	\
-					$(KERN_INCLUDE_DIR)/libc/printf.h			\
-					$(KERN_INCLUDE_DIR)/libc/stdarg.h			\
-					$(KERN_INCLUDE_DIR)/inttypes.h				\
-					$(KERN_INCLUDE_DIR)/limits.h				\
-					$(KERN_INCLUDE_DIR)/mem/memcpy.h			\
-					$(KERN_INCLUDE_DIR)/mem/memswp.h			\
-					$(KERN_INCLUDE_DIR)/mem/memset.h			\
-					$(KERN_INCLUDE_DIR)/mem/pmm.h				\
-					$(KERN_INCLUDE_DIR)/mem/vmm.h				\
-					$(KERN_INCLUDE_DIR)/mem/e820.h				\
-					$(KERN_INCLUDE_DIR)/mem/strlen.h			\
-					$(KERN_INCLUDE_DIR)/mem/string.h			\
-					$(KERN_INCLUDE_DIR)/util/ascii_tools.h		\
-					$(KERN_INCLUDE_DIR)/panic.h					\
-					$(KERN_INCLUDE_DIR)/k_log.h					\
-					$(KERN_INCLUDE_DIR)/kcmd.h					\
-					$(KERN_INCLUDE_DIR)/conf.h					\
-					$(KERN_INCLUDE_DIR)/arch/x86_64/8259_pic.h	\
-					$(KERN_INCLUDE_DIR)/arch/x86_64/exception.h	\
-					$(KERN_INCLUDE_DIR)/arch/x86_64/idt.h		\
-					$(KERN_INCLUDE_DIR)/arch/x86_64/isr.h		\
+KERN_HEADERS=		$(KERN_INCLUDE_DIR)/devices/io/ports.h			\
+					$(KERN_INCLUDE_DIR)/devices/display/vga/vga.h	\
+					$(KERN_INCLUDE_DIR)/devices/io/kb.h				\
+					$(KERN_INCLUDE_DIR)/devices/io/serial/uart.h	\
+					$(KERN_INCLUDE_DIR)/devices/io/serial/serial.h	\
+					$(KERN_INCLUDE_DIR)/lib/printf.h				\
+					$(KERN_INCLUDE_DIR)/lib/stdarg.h				\
+					$(KERN_INCLUDE_DIR)/lib/inttypes.h				\
+					$(KERN_INCLUDE_DIR)/lib/memcpy.h				\
+					$(KERN_INCLUDE_DIR)/lib/memswp.h				\
+					$(KERN_INCLUDE_DIR)/lib/memset.h				\
+					$(KERN_INCLUDE_DIR)/lib/strlen.h				\
+					$(KERN_INCLUDE_DIR)/lib/string.h				\
+					$(KERN_INCLUDE_DIR)/lib/klib.h					\
+					$(KERN_INCLUDE_DIR)/lib/panic.h					\
+					$(KERN_INCLUDE_DIR)/lib/k_log.h					\
+					$(KERN_INCLUDE_DIR)/mm/pmm.h					\
+					$(KERN_INCLUDE_DIR)/mm/vmm.h					\
+					$(KERN_INCLUDE_DIR)/mm/e820.h					\
+					$(KERN_INCLUDE_DIR)/kcmd.h						\
+					$(KERN_INCLUDE_DIR)/conf.h						\
+					$(KERN_INCLUDE_DIR)/arch/x86_64/8259_pic.h		\
+					$(KERN_INCLUDE_DIR)/arch/x86_64/exception.h		\
+					$(KERN_INCLUDE_DIR)/arch/x86_64/idt.h			\
+					$(KERN_INCLUDE_DIR)/arch/x86_64/isr.h			\
 					$(KERN_INCLUDE_DIR)/arch/x86_64/irq.h
 
 KERN_SOURCE_DIR=kernel
-KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/init.c					\
-					$(KERN_SOURCE_DIR)/kcmd.c					\
-					$(KERN_SOURCE_DIR)/drivers/io/ports.c		\
-					$(KERN_SOURCE_DIR)/drivers/io/kb.c			\
-					$(KERN_SOURCE_DIR)/drivers/vga/vga.c		\
-					$(KERN_SOURCE_DIR)/drivers/serial/uart.c	\
-					$(KERN_SOURCE_DIR)/drivers/serial/serial.c	\
-					$(KERN_SOURCE_DIR)/libc/printf.c			\
-					$(KERN_SOURCE_DIR)/mem/memcpy.c				\
-					$(KERN_SOURCE_DIR)/mem/memswp.c				\
-					$(KERN_SOURCE_DIR)/mem/memset.c				\
-					$(KERN_SOURCE_DIR)/mem/string.c				\
-					$(KERN_SOURCE_DIR)/mem/pmm.c				\
-					$(KERN_SOURCE_DIR)/mem/vmm.c				\
-					$(KERN_SOURCE_DIR)/mem/e820.c				\
-					$(KERN_SOURCE_DIR)/mem/strlen.c				\
-					$(KERN_SOURCE_DIR)/util/ascii_tools.c		\
-					$(KERN_SOURCE_DIR)/util/panic.c				\
-					$(KERN_SOURCE_DIR)/util/dbg_log.c			\
-					$(KERN_ARCH_DIR)/idt.c						\
-					$(KERN_ARCH_DIR)/isr.c						\
-					$(KERN_ARCH_DIR)/irq.c						\
-					$(KERN_ARCH_DIR)/exception.c				\
+KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/init.c						\
+					$(KERN_SOURCE_DIR)/kcmd.c						\
+					$(KERN_SOURCE_DIR)/devices/io/ports.c			\
+					$(KERN_SOURCE_DIR)/devices/io/kb.c				\
+					$(KERN_SOURCE_DIR)/devices/display/vga/vga.c	\
+					$(KERN_SOURCE_DIR)/devices/io/serial/uart.c		\
+					$(KERN_SOURCE_DIR)/devices/io/serial/serial.c	\
+					$(KERN_SOURCE_DIR)/lib/printf.c					\
+					$(KERN_SOURCE_DIR)/lib/memcpy.c					\
+					$(KERN_SOURCE_DIR)/lib/memswp.c					\
+					$(KERN_SOURCE_DIR)/lib/memset.c					\
+					$(KERN_SOURCE_DIR)/lib/string.c					\
+					$(KERN_SOURCE_DIR)/lib/strlen.c					\
+					$(KERN_SOURCE_DIR)/lib/klib.c					\
+					$(KERN_SOURCE_DIR)/lib/panic.c					\
+					$(KERN_SOURCE_DIR)/lib/dbg_log.c				\
+					$(KERN_SOURCE_DIR)/mm/pmm.c						\
+					$(KERN_SOURCE_DIR)/mm/vmm.c						\
+					$(KERN_SOURCE_DIR)/mm/e820.c					\
+					$(KERN_ARCH_DIR)/idt.c							\
+					$(KERN_ARCH_DIR)/isr.c							\
+					$(KERN_ARCH_DIR)/irq.c							\
+					$(KERN_ARCH_DIR)/exception.c					\
 					$(KERN_ARCH_DIR)/8259_pic.c
 
 KERN_ARCH_DIR=kernel/arch/$(KERN_PLATFORM)
@@ -133,7 +132,7 @@ KERN_ASM_SOURCES= 	$(KERN_ARCH_DIR)/start.asm					\
 					$(KERN_ARCH_DIR)/kernel_stub.asm			\
 					$(KERN_ARCH_DIR)/utils/e820.asm				\
 					$(KERN_ARCH_DIR)/utils/call_real.asm		\
-					$(KERN_SOURCE_DIR)/util/panic_64.asm
+					$(KERN_SOURCE_DIR)/lib/panic_64.asm
 
 KERN_OBJECTS= 		${KERN_ASM_SOURCES:.asm=.o}					\
 					${KERN_C_SOURCES:.c=.o}
@@ -145,8 +144,8 @@ KERN_REAL_BINS=		${KERN_REAL_SOURCES:.real=.bin}
 
 OS_IMAGE_NAME=arkon-$(VERSION)
 
-CC_INCLUDE_DIRS=kernel/include/
-CC_FLAGS=	-I$(CC_INCLUDE_DIRS) 	\
+CC_INCLUDE_DIRS=-Ikernel/include/ -Ikernel/include/lib
+CC_FLAGS=	$(CC_INCLUDE_DIRS) 		\
 			-Wall				 	\
 			-Wextra 				\
 			-g 						\

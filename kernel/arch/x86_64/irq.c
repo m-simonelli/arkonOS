@@ -9,7 +9,7 @@
 #include <arch/x86_64/idt.h>
 #include <arch/x86_64/irq.h>
 #include <arch/x86_64/isr.h>
-#include <drivers/io/ports.h>
+#include <devices/io/ports.h>
 #include <k_log.h>
 #include <stddef.h>
 

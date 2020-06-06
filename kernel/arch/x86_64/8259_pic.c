@@ -6,7 +6,7 @@
  */
 
 #include <arch/x86_64/8259_pic.h>
-#include <drivers/io/ports.h>
+#include <devices/io/ports.h>
 #include <inttypes.h>
 
 void remap_8259_pic(int offset_master, int offset_slave) {
