@@ -3,6 +3,10 @@
 ; You are free to redistribute/modify this code under the 
 ; terms of the GPL version 3 (see the file LICENSE)
 
+; note:
+; this file is overly commented, which is mainly so that i can come back and
+; actually understand what i was thinking when i wrote this
+
 %include "bootloader/i386/kern_info.asm"
 %include "kernel/arch/x86_64/gdt.inc"
 global k_start
@@ -69,35 +73,35 @@ null_bss:
 
 page_table_init:
     ; set first entry of PML4 to point to PDP
-    mov eax, PDP-kernel_vaddr
-    or ax, 0b11
-    mov [PML4-kernel_vaddr], eax
-    
     ; set last entry of PML4 to point to KPDP
-    mov eax, KPDP-kernel_vaddr
-    or ax, 0b11
-    mov [(PML4-kernel_vaddr) + 511*8], eax
-    
     ; set first entry of PDP to point to PD
-    mov eax, PD-kernel_vaddr
-    or ax, 0b11
-    mov [PDP-kernel_vaddr], eax
-
     ; set last entry of KPDP to point to PD
-    mov [(KPDP-kernel_vaddr) + 511*8], eax
-
     ; set first entry of PD to point to PT
-    mov eax, PT-kernel_vaddr
+
+    mov eax, PDP-kernel_vaddr
+    mov ecx, KPDP-kernel_vaddr
+    mov edx, PD-kernel_vaddr
+    mov esi, PT-kernel_vaddr
+
+    mov edi, PT-kernel_vaddr
+
     or ax, 0b11
-    mov [PD-kernel_vaddr], eax
+    or cx, 0b11
+    or dx, 0b11
+    or si, 0b11
+
+    mov [PML4-kernel_vaddr], eax
+    mov [(PML4-kernel_vaddr) + 511*8], ecx
+    mov [PDP-kernel_vaddr], edx
+    mov [(KPDP-kernel_vaddr) + 511*8], edx
+    mov [PD-kernel_vaddr], esi
 
     ; identity map PT
     ; all entries have to have 0x03 at the end for present+writeable
     mov eax, 0x03
-    mov edi, PT-kernel_vaddr
     ; loop counter
     ; every entry covers 4kb, 4x512 = 2048 = 2MB
-    mov cx, 512 ; only map first 2MB
+    mov ecx, 512 ; only map first 2MB
   .buildpt:
     ; write eax to the current entry
     mov [edi], eax

@@ -26,5 +26,5 @@
     The destination address, solely to match the declaration in string.h
 !*/
 
-void *memset(void *dst, int c, size_t n);
+void *memset(void *restrict dst, int c, size_t n);
 #endif /* _mem_memset_h */

@@ -43,7 +43,9 @@ load_kernel:
 .read_loop:
     push bx
     mov bx, [seg_count]
+    mov eax, [da_packet.blknum]
     inc bx
+    inc eax
     mov [seg_count], bx
     pop bx
     ; set ds:si to where the disk address packet is
@@ -53,8 +55,6 @@ load_kernel:
     ;pop edx
     ; this will break if blknum doesn't fit in a dword, i'll assume that never
     ; happens 
-    mov eax, [da_packet.blknum]
-    inc eax
     mov [da_packet.blknum], eax
     ; memcpy to KERN_LOAD_ADDR
     ; ds and es are guaranteed to be 0
