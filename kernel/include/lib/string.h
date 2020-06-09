@@ -46,4 +46,4 @@ char *strcpy(char *dst, char const *src);
 
 int strcmp(const char *restrict s1, const char *restrict s2);
 
-#endif /* _mem_string_h */
+#endif /* _lib_string_h */
