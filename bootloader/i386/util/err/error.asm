@@ -35,5 +35,5 @@ halt_loop:
     hlt ; and halt
 
 halt_str:
-    db 'halting', 0
+    db 'hlt', 0
 %endif

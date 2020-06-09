@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _util_ascii_tools_h
-#define _util_ascii_tools_h
+#ifndef _lib_klib_h
+#define _lib_klib_h
 
 #include <inttypes.h>
 
@@ -49,4 +49,4 @@ void itoa(int_t n, char *str, uint8_t base);
     If greater than 0, treat `n` as a signed integer, else treat it unsigned
 !*/
 void do_itoa(uint_t n, char *str, uint8_t base, uint8_t signed_int);
-#endif /* _util_ascii_tools_h */
+#endif /* _lib_klib_h */

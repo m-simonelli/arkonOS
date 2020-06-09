@@ -31,7 +31,6 @@ size_t used_e820_entries = 0;
 
 void init_e820(void *e820_addr) {
     /* Iterate over all entries and log them to VGA */
-    k_printf("%p\n", e820_addr);
     for (count_t i = 0; i < *((dword_t *)e820_addr); i++) {
         used_e820_entries++;
         /* Store each entry in an array */

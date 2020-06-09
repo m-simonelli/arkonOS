@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _drivers_io_ports_h
-#define _drivers_io_ports_h
+#ifndef _devices_io_ports_h
+#define _devices_io_ports_h
 /* typedefs */
 typedef unsigned char port_byte_t;
 typedef unsigned short port_word_t;
@@ -65,4 +65,4 @@ void port_word_out(port_t port, port_word_t data);
     Force the CPU to wait for the current I/O to finish
 !*/
 void io_wait();
-#endif /* _drivers_io_ports_h */
+#endif /* _devices_io_ports_h */

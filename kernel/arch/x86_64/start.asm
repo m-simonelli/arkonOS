@@ -28,6 +28,8 @@ global halt
 
 section .text
 k_start:
+    ; bootloader gives us the system time, due to virtual address w
+    mov [sys_time-kernel_vaddr], edi
     ; null the bss segment, where we have the page tables
     mov ebp, 0x90000
     mov esp, ebp
@@ -42,7 +44,8 @@ k_start:
 
 section .text
 ; because bss_begin and bss_end are defined in kernel.ld, we can't do this 
-; in the bootloader
+; in the bootloader - and also the bootloader is literally on the 512 byte
+; boundary
 null_bss:
     push eax
     push ecx
@@ -149,6 +152,8 @@ goto_kmain:
     mov word [e820_map_addr], 0x8800
     ; can't directly call addresses >2GiB
     ; move address into register and call the register
+    xor rdx, rdx
+    mov edi, [sys_time]
     mov rax, kmain
     call rax
     ; kmain is a c function, hence it will return
@@ -173,3 +178,7 @@ global PT
 PT:     resb 4096
 global PMM_PD
 PMM_PD: resb 4096
+
+section .data
+align 4096
+sys_time: dd 0

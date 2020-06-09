@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _inttypes_h
-#define _inttypes_h
+#ifndef _lib_inttypes_h
+#define _lib_inttypes_h
 #include <conf.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -49,4 +49,4 @@ typedef count_t iterator_t;
 #define QWORD qword_t
 #endif /* KERN_TARGET_x86_64 */
 
-#endif /* _inttypes_h */
+#endif /* _lib_inttypes_h */

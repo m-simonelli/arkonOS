@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _heap_memswp_h
-#define _heap_memswp_h
+#ifndef _lib_memswp_h
+#define _lib_memswp_h
 #include <inttypes.h>
 
 /*!
@@ -23,4 +23,4 @@
     The amount of bytes to swap
 !*/
 void memswp(const char *m1, const char *m2, size_t size);
-#endif /* _heap_memswp_h */
+#endif /* _lib_memswp_h */

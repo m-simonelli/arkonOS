@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _panic_h
-#define _panic_h
+#ifndef _lib_panic_h
+#define _lib_panic_h
 
 #include <conf.h>
 
@@ -54,4 +54,4 @@ struct panic_dump {
     size_t cr3;
 };
 
-#endif /* _panic_h */
+#endif /* _lib_panic_h */

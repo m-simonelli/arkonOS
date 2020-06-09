@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _drivers_serial_uart_h
-#define _drivers_serial_uart_h
+#ifndef _devices_io_serial_uart_h
+#define _devices_io_serial_uart_h
 /* TODO: probe to check the address of com ports */
 #include <conf.h>
 #include <devices/io/ports.h>
@@ -181,4 +181,4 @@ void uart_modem_enable_lbm();
 void uart_modem_enable_afc();
 void uart_modem_disable_lbm();
 void uart_modem_disable_afc();
-#endif /* _drivers_serial_uart_h */
+#endif /* _devices_io_serial_uart_h */

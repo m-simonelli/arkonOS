@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _heap_memcpy_h
-#define _heap_memcpy_h
+#ifndef _lib_memcpy_h
+#define _lib_memcpy_h
 #include <inttypes.h>
 /*!
     @function memcpy
@@ -25,4 +25,4 @@
     The destination address, solely to match the declaration in string.h
 !*/
 void *memcpy(void *to, const void *from, size_t len);
-#endif /* _heap_memcpy_h */
+#endif /* _lib_memcpy_h */

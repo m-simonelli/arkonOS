@@ -70,12 +70,12 @@ clear_screen:       ; clear the screen
 
     xor bx, bx      ; black background
     
-    mov ah, 0x07    ; scroll window
-    mov al, 0x00    ; clear entire window
+    mov ax, 0x0700  ; scroll window
+                    ; clear entire window
     mov bh, 0x07    ; white foreground
     mov cx, 0x00    ; sets top left as 0,0
-    mov dh, 0x18    ; 24 rows of chars
-    mov dl, 0x4f    ; 79 cols of chars 
+    mov dh, 0x184f  ; 24 rows of chars
+                    ; 79 cols of chars 
     int PRINT_INT
 
     popa            ; restore registers

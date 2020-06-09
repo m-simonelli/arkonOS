@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _mem_pmm_h
-#define _mem_pmm_h
+#ifndef _mm_pmm_h
+#define _mm_pmm_h
 
 #include <conf.h>
 #include <inttypes.h>
@@ -86,4 +86,4 @@ extern page_table PT;
 
 enum page_sizes { PAGE_4KiB, PAGE_2MiB, PAGE_1GiB };
 
-#endif /* _mem_pmm_h */
+#endif /* _mm_pmm_h */

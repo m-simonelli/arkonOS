@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _drivers_vga_h
-#define _drivers_vga_h
+#ifndef _devices_display_vga_vga_h
+#define _devices_display_vga_vga_h
 #include <devices/io/serial/serial.h>
 #include <inttypes.h>
 
@@ -168,4 +168,4 @@ void vga_scroll_line();
     The amount of bytes to print
 !*/
 void vga_print_from_address(void *addr, count_t cnt);
-#endif /* _drivers_vga_h */
+#endif /* _devices_display_vga_vga_h */

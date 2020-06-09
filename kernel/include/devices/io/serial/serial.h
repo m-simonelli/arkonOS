@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _drivers_serial_serial_h
-#define _drivers_serial_serial_h
+#ifndef _devices_io_serial_serial_h
+#define _devices_io_serial_serial_h
 #include <conf.h>
 #include <devices/io/ports.h>
 #include <inttypes.h>
@@ -50,4 +50,4 @@ void serial_init();
     The message to be printed to serial
 !*/
 void serial_print(const char *restrict serial_msg);
-#endif /* _drivers_serial_serial_h */
+#endif /* _devices_io_serial_serial_h */

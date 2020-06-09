@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _mem_string_h
-#define _mem_string_h
+#ifndef _lib_string_h
+#define _lib_string_h
 
 #include <inttypes.h>
 #include <memset.h>

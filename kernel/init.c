@@ -18,12 +18,14 @@
 #include <stddef.h>
 #include <klib.h>
 
-void kmain() {
+void kmain(int systime) {
     /* Initialize VGA */
     vga_init();
 
     k_printf("Welcome to ArkonOS 0.2.1-alpha, compiled on %s at %s\n", __DATE__,
              __TIME__);
+
+    k_printf("Clocks since midnight: %d\n", systime);
 
     /* Initalize serial I/O */
     serial_init();

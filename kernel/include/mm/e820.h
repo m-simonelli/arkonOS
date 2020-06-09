@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _mem_e820_h
-#define _mem_e820_h
+#ifndef _mm_e820_h
+#define _mm_e820_h
 
 #include <inttypes.h>
 
@@ -66,4 +66,4 @@ extern e820_entry_t e820_entries[E820_MAX];
 extern size_t total_e820_size;
 extern size_t used_e820_entries;
 
-#endif /* _mem_e820_h */
+#endif /* _mm_e820_h */

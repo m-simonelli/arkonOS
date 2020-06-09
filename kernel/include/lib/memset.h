@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _mem_memset_h
-#define _mem_memset_h
+#ifndef _lib_memset_h
+#define _lib_memset_h
 #include <inttypes.h>
 
 /*!
@@ -27,4 +27,4 @@
 !*/
 
 void *memset(void *restrict dst, int c, size_t n);
-#endif /* _mem_memset_h */
+#endif /* _lib_memset_h */

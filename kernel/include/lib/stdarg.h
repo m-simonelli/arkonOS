@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _libc_stdarg_h
-#define _libc_stdarg_h
+#ifndef _lib_stdarg_h
+#define _lib_stdarg_h
 
 #ifndef __GNUC_VA_LIST
 #define __GNUC_VA_LIST
@@ -24,4 +24,4 @@ typedef __gnuc_va_list va_list;
 #define va_arg(v, l) __builtin_va_arg(v, l)
 #endif /* __va_funcs__ */
 
-#endif /* _libc_stdarg_h */
+#endif /* _lib_stdarg_h */

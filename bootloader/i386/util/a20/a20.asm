@@ -2,6 +2,10 @@
 ; Copyright Marco Simonelli 2020
 ; You are free to redistribute/modify this code under the 
 ; terms of the GPL version 3 (see the file LICENSE)
+
+; We **could** try and have more A20 methods here, but these should work on
+; 99% of modern systems so long as Fast A20 is present (even if it isn't,
+; we have the BIOS method to fall back on.)
 [bits 16]
 enable_a20:
     mov     ax,2403h
@@ -29,6 +33,7 @@ a20_activated:
     ret
 
 a20_bios_failed:
+    ; enabling the a20 w BIOS failed, try fast a20
     in al, 0x92
     test al, 2
     jnz a20_activated

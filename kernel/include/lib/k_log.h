@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _k_log_h
-#define _k_log_h
+#ifndef _lib_k_log_h
+#define _lib_k_log_h
 
 #include <inttypes.h>
 
@@ -17,4 +17,4 @@ extern void (*log_putchar)(char);
 void dbg_log(const char *func, ssize_t line, char *msg, ...);
 #define kprintf k_printf
 
-#endif /* _k_log_h */
+#endif /* _lib_k_log_h */

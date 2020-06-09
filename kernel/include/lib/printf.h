@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _libc_printf_h
-#define _libc_printf_h
+#ifndef _lib_printf_h
+#define _lib_printf_h
 
 #include <inttypes.h>
 #include <stdarg.h>
@@ -69,4 +69,4 @@
 
 void vsprintf(char *str, void (*putchar)(char), const char *fmt, va_list ap);
 
-#endif /* _libc_printf_h */
+#endif /* _lib_printf_h */

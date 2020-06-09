@@ -15,6 +15,7 @@ start:
     mov sp, bp
 
     call load_kernel
+    call int_get_systime
 
     ; kernel is 32 bit, now need to switch to protected mode
     mov edx, prot_mode_init ; callback for after prot mode was entered
@@ -76,18 +77,16 @@ load_kernel:
 %include "util/disk.asm"
 %include "util/pm/protmode.asm"
 %include "util/a20/a20.asm"
+%include "util/time/systime.asm"
 
 boot_string:
-    db 'Booting', NEW_LINE, 0
-kernel_load_string:
-    db 'Loading kernel...', NEW_LINE, 0
-newline:
-    db NEW_LINE, 0
+    db 'boot', NEW_LINE, 0
 
-BOOT_DRIVE db 0x80
 [bits 32]
 prot_mode_init:
-    jmp KERN_LOAD_ADDR ; transfer ctrl to kernel
+    call get_systime
+    mov edi, eax
+    call KERN_LOAD_ADDR ; transfer ctrl to kernel
     jmp halt
 
 times 510-($-$$) db 0

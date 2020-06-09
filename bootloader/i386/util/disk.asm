@@ -16,8 +16,7 @@ disk_read:
     ; if cf is set, bios gave error
     jc disk_error
     ; check how many sectors were read
-    mov dx, [da_packet.blkcnt]
-    cmp cx, dx
+    cmp cx, [da_packet.blkcnt]
     ; read incorrect amount of sectors
     jne sector_error
     popa
@@ -25,7 +24,6 @@ disk_read:
 
 disk_error:
     ; int 13h sets ah to the error
-    mov al, ah
     mov ah, 0
     mov bx, disk_error_string
     mov al, [seg_count]
@@ -37,10 +35,10 @@ sector_error:
     jmp error
 
 disk_error_string:
-    db 'Disk read err', 0
+    db 'dsk read err', 0
 
 sector_error_string:
-    db 'Sector cnt err', 0
+    db 'sec cnt err', 0
 
 align 2
 ; values are preset to kernel load values to save bytes

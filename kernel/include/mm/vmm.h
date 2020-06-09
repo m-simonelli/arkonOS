@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#ifndef _mem_vmm_h
-#define _mem_vmm_h
+#ifndef _mm_vmm_h
+#define _mm_vmm_h
 
 #include <inttypes.h>
 #include <mm/pmm.h>
@@ -35,4 +35,4 @@ vaddr_info_t vaddr_to_paddr(vaddr_t vaddr);
 !*/
 void vmm_map(vaddr_t vaddr, paddr_t paddr, uint32_t flags, vmm_page_table pml4);
 
-#endif /* _mem_vmm_h */
+#endif /* _mm_vmm_h */
