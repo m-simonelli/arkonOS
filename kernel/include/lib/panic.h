@@ -9,6 +9,7 @@
 #define _lib_panic_h
 
 #include <conf.h>
+#include <inttypes.h>
 
 extern __attribute__((noreturn)) void halt();
 __attribute__((noreturn)) void _panic(char *pmsg, ...);
