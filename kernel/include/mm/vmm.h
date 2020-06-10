@@ -27,7 +27,7 @@ vaddr_info_t vaddr_to_paddr(vaddr_t vaddr);
     The physical address where vaddr should be mapped to
 
     @param flags
-    Additional flags to be set in the PML1 (PAGE_PRESENT and PAGE_WRITEABLE 
+    Additional flags to be set in the PML1 (PAGE_PRESENT and PAGE_WRITEABLE
     are both default and compulsory)
 
     @param pml4

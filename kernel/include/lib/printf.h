@@ -9,11 +9,11 @@
 #define _lib_printf_h
 
 #include <inttypes.h>
-#include <stdarg.h>
+#include <klib.h>
 #include <memset.h>
+#include <stdarg.h>
 #include <string.h>
 #include <strlen.h>
-#include <klib.h>
 
 /*!
     @function vsprintf

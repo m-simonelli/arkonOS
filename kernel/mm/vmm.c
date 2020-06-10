@@ -5,8 +5,8 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#include <string.h>
 #include <mm/vmm.h>
+#include <string.h>
 
 #define VADDR_FLAG_BITS (0x3FF)
 #define VADDR_ADDR_BITS (~VADDR_FLAG_BITS)

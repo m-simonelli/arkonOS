@@ -6,10 +6,10 @@
  */
 
 #include <k_log.h>
+#include <klib.h>
+#include <panic.h>
 #include <printf.h>
 #include <string.h>
-#include <panic.h>
-#include <klib.h>
 
 void (*log_putchar)(char) = NULL;
 

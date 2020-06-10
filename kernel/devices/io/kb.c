@@ -11,9 +11,9 @@
 #include <k_log.h>
 #include <kcmd.h>
 #include <mm/pmm.h>
-#include <string.h>
 #include <panic.h>
 #include <stddef.h>
+#include <string.h>
 
 #define SC_ENTER 0x1C
 #define SC_BACKSPACE 0x0E

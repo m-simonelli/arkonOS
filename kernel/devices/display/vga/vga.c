@@ -5,15 +5,15 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
-#include <devices/io/ports.h>
 #include <devices/display/vga/vga.h>
+#include <devices/io/ports.h>
 #include <inttypes.h>
 #include <k_log.h>
+#include <klib.h>
+#include <memcpy.h>
 #include <printf.h>
 #include <stdarg.h>
-#include <memcpy.h>
 #include <strlen.h>
-#include <klib.h>
 
 uint8_t vga_has_initialized = 0;
 

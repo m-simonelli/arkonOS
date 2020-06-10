@@ -8,8 +8,8 @@
 #include <k_log.h>
 #include <mm/e820.h>
 #include <mm/pmm.h>
-#include <string.h>
 #include <panic.h>
+#include <string.h>
 
 /* Handy macro to calculate bitmap size */
 #define BITMAP_SIZE(mem_size) (mem_size / PAGE_SIZE / 8)

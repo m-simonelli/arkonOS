@@ -5,9 +5,9 @@
  *  terms of the GPL version 3 (see the file LICENSE)
  */
 
+#include <klib.h>
 #include <limits.h>
 #include <memswp.h>
-#include <klib.h>
 
 void reverse(char *str, uint_t len) {
     size_t start = 0;

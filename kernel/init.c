@@ -6,9 +6,9 @@
  */
 
 #include <arch/x86_64/idt.h>
+#include <devices/display/vga/vga.h>
 #include <devices/io/kb.h>
 #include <devices/io/serial/serial.h>
-#include <devices/display/vga/vga.h>
 #include <inttypes.h>
 #include <k_log.h>
 #include <kcmd.h>

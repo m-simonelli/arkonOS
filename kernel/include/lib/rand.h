@@ -10,10 +10,7 @@
 
 #include <inttypes.h>
 
-enum rand_algorithms {
-    RAND_ALGORITHM_LCG = 0,
-    RAND_ALGORITHM_MT
-};
+enum rand_algorithms { RAND_ALGORITHM_LCG = 0, RAND_ALGORITHM_MT };
 
 /*
     Random generator seed functions
