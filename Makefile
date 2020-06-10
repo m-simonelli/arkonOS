@@ -89,6 +89,7 @@ KERN_HEADERS=		$(KERN_INCLUDE_DIR)/devices/io/ports.h			\
 					$(KERN_INCLUDE_DIR)/lib/klib.h					\
 					$(KERN_INCLUDE_DIR)/lib/panic.h					\
 					$(KERN_INCLUDE_DIR)/lib/k_log.h					\
+					$(KERN_INCLUDE_DIR)/lib/rand.h					\
 					$(KERN_INCLUDE_DIR)/mm/pmm.h					\
 					$(KERN_INCLUDE_DIR)/mm/vmm.h					\
 					$(KERN_INCLUDE_DIR)/mm/e820.h					\
@@ -115,6 +116,7 @@ KERN_C_SOURCES=		$(KERN_SOURCE_DIR)/init.c						\
 					$(KERN_SOURCE_DIR)/lib/string.c					\
 					$(KERN_SOURCE_DIR)/lib/strlen.c					\
 					$(KERN_SOURCE_DIR)/lib/klib.c					\
+					$(KERN_SOURCE_DIR)/lib/rand.c					\
 					$(KERN_SOURCE_DIR)/lib/panic.c					\
 					$(KERN_SOURCE_DIR)/lib/dbg_log.c				\
 					$(KERN_SOURCE_DIR)/mm/pmm.c						\

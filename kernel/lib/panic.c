@@ -43,8 +43,8 @@ __attribute__((noreturn)) void _panic(char *pmsg, ...) {
     _panic_printf("RSP: %#0*llx\n", 16, p_regs.sp);
     _panic_printf("RBP: %#0*llx\n", 16, p_regs.bp);
 
-    _panic_printf("R8: %#0*llx\n", 16, p_regs.r8);
-    _panic_printf("R9: %#0*llx\n", 16, p_regs.r9);
+    _panic_printf("R8:  %#0*llx\n", 16, p_regs.r8);
+    _panic_printf("R9:  %#0*llx\n", 16, p_regs.r9);
     _panic_printf("R10: %#0*llx\n", 16, p_regs.r10);
     _panic_printf("R11: %#0*llx\n", 16, p_regs.r11);
     _panic_printf("R12: %#0*llx\n", 16, p_regs.r12);

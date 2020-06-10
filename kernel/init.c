@@ -12,11 +12,9 @@
 #include <inttypes.h>
 #include <k_log.h>
 #include <kcmd.h>
-#include <printf.h>
+#include <lib/rand.h>
 #include <mm/e820.h>
 #include <mm/pmm.h>
-#include <stddef.h>
-#include <klib.h>
 
 void kmain(int systime) {
     /* Initialize VGA */
@@ -26,6 +24,14 @@ void kmain(int systime) {
              __TIME__);
 
     k_printf("Clocks since midnight: %d\n", systime);
+
+    set_rand_algorithm(RAND_ALGORITHM_MT);
+    srand(systime);
+    k_printf("Random value: %d\n", rand());
+    k_printf("Random value: %d\n", rand());
+    k_printf("Random value: %d\n", rand());
+    k_printf("Random value: %d\n", rand());
+    k_printf("Random value: %d\n", rand());
 
     /* Initalize serial I/O */
     serial_init();
