@@ -3,7 +3,7 @@
 #  You are free to redistribute/modify this code under the 
 #  terms of the GPL version 3 (see the file LICENSE)
 
-VERSION=0.2.1-alpha
+VERSION=0.3.0-alpha
 
 #leave these as is, support for other platforms is planned
 PLATFORM=i386
