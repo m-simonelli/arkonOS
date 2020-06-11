@@ -8,8 +8,9 @@
 #include <klib.h>
 #include <limits.h>
 #include <memswp.h>
+#include <inttypes.h>
 
-void reverse(char *str, uint_t len) {
+void reverse(char *restrict str, uint_t len) {
     size_t start = 0;
     size_t end = len - 1;
     while (start < end)
@@ -17,7 +18,7 @@ void reverse(char *str, uint_t len) {
                (char *)((size_t)str + (end--)), 1);
 }
 
-void do_itoa(uint_t n, char *str, uint8_t base, uint8_t signed_int) {
+void do_itoa(uint_t n, char *restrict str, uint8_t base, uint8_t signed_int) {
     if (n == 0) {
         str[0] = '0';
         str[0] = '\0';
@@ -42,4 +43,28 @@ void do_itoa(uint_t n, char *str, uint8_t base, uint8_t signed_int) {
     reverse(str, i);
 }
 
-void itoa(int_t n, char *str, uint8_t base) { do_itoa(n, str, base, 1); }
+/* TODO: implement malloc() so this can work
+int split_string(char *str, char **list, size_t max_elem){
+    if(max_elem == 0) return 0;
+    else if(str == NULL) return -1;
+    else if(list == NULL) return -1;
+
+    *list = 
+}
+*/
+void itoa(int_t n, char *restrict str, uint8_t base) { do_itoa(n, str, base, 1); }
+
+int atoi(const char *restrict s){
+    int res = 0;
+    int sign = 1;
+    
+    if(s[0] == 0) return 0;
+    else if(s[0] == '-') sign = -1;
+
+    for(int i = (sign == 1 ? 0 : 1); s[i] != 0; i++){
+        if(!(s[i] >= '0') || !(s[i] <= '9')) break;
+        res = res * 10 + (s[i] - '0');
+    }
+
+    return res * sign;
+}

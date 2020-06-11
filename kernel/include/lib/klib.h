@@ -29,7 +29,7 @@
     function wraps `do_itoa` setting the `signed_int` parameter of it to 1
     unconditionally
 !*/
-void itoa(int_t n, char *str, uint8_t base);
+void itoa(int_t n, char *restrict str, uint8_t base);
 
 /*!
     @function do_itoa
@@ -48,5 +48,7 @@ void itoa(int_t n, char *str, uint8_t base);
     @param signed_int
     If greater than 0, treat `n` as a signed integer, else treat it unsigned
 !*/
-void do_itoa(uint_t n, char *str, uint8_t base, uint8_t signed_int);
+void do_itoa(uint_t n, char *restrict str, uint8_t base, uint8_t signed_int);
+
+int atoi(const char *restrict s);
 #endif /* _lib_klib_h */

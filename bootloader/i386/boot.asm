@@ -14,6 +14,8 @@ start:
     mov bp, 0x8000 ; setup stack
     mov sp, bp
 
+    call enable_a20
+
     call load_kernel
     call int_get_systime
 
@@ -39,7 +41,6 @@ load_kernel:
     ;memcpy setup
     mov edi, KERN_LOAD_ADDR
 
-    xor eax, eax
     mov edx, 1
 .read_loop:
     push bx

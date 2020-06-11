@@ -8,6 +8,8 @@
 #include <k_log.h>
 #include <mm/pmm.h>
 #include <string.h>
+#include <lib/klib.h>
+#include <lib/rand.h>
 
 void run_kcmd(char *cmd) {
     if (cmd) {
@@ -23,6 +25,13 @@ void run_kcmd(char *cmd) {
             asm volatile(
                 "\n\tcli"
                 "\n\thlt");
+        } else if (strcmp(cmd, "rand") == 0){
+            /* TODO:
+                1. Implement string split
+                2. malloc() for 1.
+                3. Lower bound + upper bound after 1 and 2
+            */
+            kprintf("%d\n", rand());
         } else {
             kprintf("%s\n", cmd);
         }

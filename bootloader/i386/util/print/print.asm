@@ -74,7 +74,7 @@ clear_screen:       ; clear the screen
                     ; clear entire window
     mov bh, 0x07    ; white foreground
     mov cx, 0x00    ; sets top left as 0,0
-    mov dh, 0x184f  ; 24 rows of chars
+    mov dx, 0x184f  ; 24 rows of chars
                     ; 79 cols of chars 
     int PRINT_INT
 
@@ -83,8 +83,5 @@ clear_screen:       ; clear the screen
 
 HEX_STR:
     db '0x00', 0
-
-HEX_WORD_STR:
-    db '0x0000', 0
 
 %endif
