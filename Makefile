@@ -142,6 +142,7 @@ KERN_ASM_SOURCES= 	$(KERN_ARCH_DIR)/start.asm					\
 					$(KERN_ARCH_DIR)/kernel_stub.asm			\
 					$(KERN_ARCH_DIR)/utils/e820.asm				\
 					$(KERN_ARCH_DIR)/utils/call_real.asm		\
+					$(KERN_ARCH_DIR)/utils/shutdown.asm			\
 					$(KERN_SOURCE_DIR)/lib/panic_64.asm
 
 KERN_NO_SSP_SOURCES=$(KERN_SOURCE_DIR)/lib/rand/lcg.c			\
@@ -153,7 +154,8 @@ KERN_OBJECTS= 		${KERN_ASM_SOURCES:.asm=.o}					\
 					${KERN_C_SOURCES:.c=.o}
 
 KERN_REAL_SOURCES=	$(KERN_ARCH_DIR)/utils/real/e820.real		\
-					$(KERN_ARCH_DIR)/utils/real/real_init.real
+					$(KERN_ARCH_DIR)/utils/real/real_init.real	\
+					$(KERN_ARCH_DIR)/utils/real/shutdown.real
 
 KERN_REAL_BINS=		${KERN_REAL_SOURCES:.real=.bin}
 
@@ -294,7 +296,7 @@ $(OS_IMAGE_NAME).bin: boot.bin kernel.bin
 	cat $^ > $@
 
 clean:
-	rm -rf *.bin *.o *.elf $(KERN_OBJECTS) bootloader/i386/*.o bootloader/i386/kern_info.asm kernel/arch/x86_64/*.o kernel.ld $(KERN_INCLUDE_DIR)/conf.h kernel_inc.gen $(KERN_REAL_BINS)
+	rm -rf *.bin *.o *.elf $(KERN_ALL_OBJECTS) bootloader/i386/*.o bootloader/i386/kern_info.asm kernel/arch/x86_64/*.o kernel.ld $(KERN_INCLUDE_DIR)/conf.h kernel_inc.gen $(KERN_REAL_BINS)
 
 run: $(OS_IMAGE_NAME).bin
 	qemu-system-x86_64 $(QEMU_OPTIONS) -hda $(OS_IMAGE_NAME).bin
