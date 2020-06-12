@@ -12,29 +12,6 @@
 
 enum rand_algorithms { RAND_ALGORITHM_LCG = 0, RAND_ALGORITHM_MT };
 
-/*
-    Random generator seed functions
-*/
-int lcg_srand(int seed);
-int mt_srand(int seed);
-
-/*
-    Random generator rand functions
-*/
-/* Lower 31 bits are useable for random */
-int lcg_rand(void);
-/* Lower 32 bits are useable for random */
-int mt_rand();
-
-/*
-    Other random functions
-*/
-void mt_twist();
-
-/*
-    Actual rand functinos
-*/
-
 /*!
     @function srand
     Set the seed of the currently set random generator (defaults to LCG)

@@ -7,6 +7,7 @@
 
 #include <k_log.h>
 #include <mm/e820.h>
+#include <conf.h>
 
 /*  The "unknown" strings are so that the corresponding string
     can be addressed by the type value given in the e820 entry  */
@@ -40,14 +41,18 @@ void init_e820(void *e820_addr) {
                            .end = *(uint64_t *)(e820_addr + 4 + (24 * i)) +
                                   *(uint64_t *)(e820_addr + 12 + (24 * i)),
                            .type = *(uint32_t *)(e820_addr + 20 + (24 * i))};
+#if KERN_VERBOSITY >= 2
         /* Print the entry */
         k_log("start: %#08llx", e820_entries[i].base);
         k_printf("\tlength: %#08llx", e820_entries[i].length);
         k_printf("\ttype: %s", e820_region_type_strings[e820_entries[i].type]);
         k_printf("\n");
+#endif
     }
     total_e820_size = get_total_e820_size();
+#if KERN_VERBOSITY >= 2
     k_log("Total size: %#08llx\n", total_e820_size);
+#endif
 }
 
 size_t get_total_e820_size() {

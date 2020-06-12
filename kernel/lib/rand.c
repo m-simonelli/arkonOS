@@ -8,96 +8,16 @@
 #include <lib/panic.h>
 #include <lib/rand.h>
 
-/*
-    MT19937 coefficients
-*/
-#define MT_19937_W (32)
-#define MT_19937_N (624)
-#define MT_19937_M (397)
-#define MT_19937_R (31)
-#define MT_19937_A (0x9908B0DF)
-#define MT_19937_U (11)
-#define MT_19937_D (0xFFFFFFFF)
-#define MT_19937_S (9)
-#define MT_19937_B (0x9D2C5680)
-#define MT_19937_T (15)
-#define MT_19937_C (0xEFC60000)
-#define MT_19937_L (18)
-#define MT_19937_F 1812433253
-
-static int MT[MT_19937_N - 1] = {0};
-static int mt_idx = MT_19937_N + 1;
-
-static const unsigned int mt_lmask = (int)((uint64_t)(1 << MT_19937_R) - 1);
-static const unsigned int mt_umask = ~mt_lmask & (((uint64_t)1 << MT_19937_W) - 1);
+#include <lib/rand/mt19937.h>
+#include <lib/rand/lcg.h>
 
 typedef int (*rand_algorithm_seed_func_t)(int seed);
 typedef int (*rand_algorithm_rand_func_t)(void);
 
 const rand_algorithm_seed_func_t rand_alg_seed_funcs[] = {lcg_srand, mt_srand};
-
 const rand_algorithm_rand_func_t rand_alg_rand_funcs[] = {lcg_rand, mt_rand};
 
 int alg = 0;
-int rseed = 0;
-
-/*
-    Linear Congruential Generator
-*/
-int lcg_srand(int seed) {
-    rseed = seed;
-    return rseed;
-}
-
-int lcg_rand(void) {
-    rseed = (rseed * 1103515245 + 12345) & 0x7FFFFFFF;
-    return (uint32_t)rseed;
-}
-
-/*
-    Mersenne Twister as implemented in MT19937
-*/
-int mt_srand(int seed) {
-    mt_idx = MT_19937_N;
-    rseed = seed;
-
-    MT[0] = seed;
-    for (int i = 1; i < MT_19937_N - 1; i++) {
-        MT[i] = (MT_19937_F * (MT[i - 1] ^ (MT[i - 1] >> (MT_19937_W - 2))) + i) &
-                (((uint64_t)1 << MT_19937_W) - 1);
-    }
-
-    return rseed;
-}
-
-int mt_rand() {
-    if (mt_idx >= MT_19937_N) {
-        if (mt_idx > MT_19937_N) {
-            panic("MT rand attempted without seed!\n");
-        }
-        mt_twist();
-    }
-
-    int rand = MT[mt_idx];
-    rand = rand ^ ((rand >> MT_19937_U) & MT_19937_D);
-    rand = rand ^ ((rand << MT_19937_S) & MT_19937_B);
-    rand = rand ^ ((rand << MT_19937_T) & MT_19937_C);
-    rand = rand ^ (rand >> MT_19937_L);
-
-    mt_idx++;
-
-    return rand & (((uint64_t)1 << MT_19937_W) - 1);
-}
-
-void mt_twist() {
-    for (int i = 0; i < MT_19937_N - 1; i++) {
-        int x = (MT[i] & mt_umask) + (MT[(i + 1) % MT_19937_N] & mt_lmask);
-        int xA = x >> 1;
-        if (x & 1) xA = xA ^ MT_19937_A;
-        MT[i] = MT[(i + MT_19937_M) % MT_19937_N] ^ xA;
-    }
-    mt_idx = 0;
-}
 
 int set_rand_algorithm(enum rand_algorithms a) {
     alg = a;

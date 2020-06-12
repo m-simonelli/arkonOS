@@ -16,6 +16,11 @@ global halt
 [extern bss_begin]
 [extern bss_end]
 
+[extern __stack_chk_guard]
+[extern set_rand_algorithm]
+[extern srand]
+[extern rand]
+
 ; TODO:
 ; Check VGA is supported by the graphics card before using it
 
@@ -140,6 +145,7 @@ page_table_init:
 
 [bits 64]
 goto_kmain:
+    call do_ssp_init
     ; set up segments for data
     mov ax, 0x10
     mov ds, ax
@@ -152,13 +158,35 @@ goto_kmain:
     mov word [e820_map_addr], 0x8800
     ; can't directly call addresses >2GiB
     ; move address into register and call the register
-    xor rdx, rdx
+    xor rdi, rdi
     mov edi, [sys_time]
     mov rax, kmain
     call rax
     ; kmain is a c function, hence it will return
     ; hang here instead of letting execution continue
     jmp $
+
+do_ssp_init:
+    push rdi
+    push rax
+    ; use MT19937 for SSP
+    mov rdi, 1
+    call set_rand_algorithm
+    ; seed rand with sys time
+    xor rdi, rdi
+    mov edi, [sys_time]
+    call srand
+    ; get 2 random values as MT allows for 32 bit values
+    call rand
+    mov [rand_ld], eax
+    call rand
+    mov [rand_ud], eax
+    ; set stack guard
+    mov rax, [rand_ud]
+    mov [__stack_chk_guard], rax
+    pop rax
+    pop rdi
+    ret
 
 halt:
     cli
@@ -182,3 +210,5 @@ PMM_PD: resb 4096
 section .data
 align 4096
 sys_time: dd 0
+rand_ud: dd 0
+rand_ld: dd 0

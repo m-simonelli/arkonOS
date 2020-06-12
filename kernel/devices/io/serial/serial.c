@@ -8,6 +8,7 @@
 #include <devices/io/serial/serial.h>
 #include <devices/io/serial/uart.h>
 #include <k_log.h>
+#include <conf.h>
 
 char serial_read() {
     /* wait until data can be read */
@@ -48,7 +49,9 @@ void serial_init() {
     /* enable aux output 2 bit */
     uart_modem_enable_ao2();
     /* log to output */
+#if KERN_VERBOSITY >= 2
     k_log("serial init\n");
+#endif
 }
 
 void serial_print(const char *restrict serial_msg) {

@@ -10,6 +10,7 @@
 #include <mm/pmm.h>
 #include <panic.h>
 #include <string.h>
+#include <conf.h>
 
 /* Handy macro to calculate bitmap size */
 #define BITMAP_SIZE(mem_size) (mem_size / PAGE_SIZE / 8)
@@ -47,19 +48,23 @@ void *pmm_alloc_block() {
 }
 
 void init_pmm(size_t mem_size) {
-    k_log("Initializing PMM\n");
     bitmap_size = BITMAP_SIZE(mem_size);
+#if KERN_VERBOSITY >= 2
+    k_log("Initializing PMM\n");
 
     k_log("mem_size: %#08llx\n", mem_size);
     k_log("bitmap size: %#08llx\n", bitmap_size);
     k_log("kern_end: %p\n", kern_end);
 
     k_log("Setting up pages for PMM bitmap\n");
+#endif
     bitmap_vaddr = round_up(kern_end, PD_HUGE_PAGE_SIZE);
     bitmap_paddr = round_up((size_t)kern_end - KERN_VADDR, PAGE_SIZE);
+
+#if KERN_VERBOSITY >= 2
     k_log("PMM bitmap will be located at v:%#0*llx p:%#0*llx\n", 16,
           bitmap_vaddr, 16, bitmap_paddr);
-
+#endif
     /* Write the phys address of the bitmap to the page tables (PML1) */
     uint_t pmm_pt_cur_addr = bitmap_paddr | 0x3;
     for (uint16_t i = bitmap_paddr / PAGE_SIZE;

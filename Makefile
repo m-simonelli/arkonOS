@@ -32,6 +32,12 @@ TOOL_PREFIX=i386-elf-
 #prefix for kernel compiler toolchain
 KERN_TOOL_PREFIX=$(KERN_PLATFORM)-elf-
 
+#verbosity
+#0=no debug or panic output
+#1=reserved
+#2=debug output
+KERN_VERBOSITY=0
+
 #qemu options
 #Enable serial port redirection to device QEMU_REDIRECT_SERIAL_DEVICE
 #if QEMU_REDIRECT_DEBUGCON is 1, then it takes presendence over this option
@@ -90,6 +96,8 @@ KERN_HEADERS=		$(KERN_INCLUDE_DIR)/devices/io/ports.h			\
 					$(KERN_INCLUDE_DIR)/lib/panic.h					\
 					$(KERN_INCLUDE_DIR)/lib/k_log.h					\
 					$(KERN_INCLUDE_DIR)/lib/rand.h					\
+					$(KERN_INCLUDE_DIR)/lib/rand/lcg.h				\
+					$(KERN_INCLUDE_DIR)/lib/rand/mt19937.h			\
 					$(KERN_INCLUDE_DIR)/mm/pmm.h					\
 					$(KERN_INCLUDE_DIR)/mm/vmm.h					\
 					$(KERN_INCLUDE_DIR)/mm/e820.h					\
@@ -136,6 +144,11 @@ KERN_ASM_SOURCES= 	$(KERN_ARCH_DIR)/start.asm					\
 					$(KERN_ARCH_DIR)/utils/call_real.asm		\
 					$(KERN_SOURCE_DIR)/lib/panic_64.asm
 
+KERN_NO_SSP_SOURCES=$(KERN_SOURCE_DIR)/lib/rand/lcg.c			\
+					$(KERN_SOURCE_DIR)/lib/rand/mt19937.c		\
+					$(KERN_SOURCE_DIR)/lib/ssp.c
+
+KERN_NO_SSP_OBJECTS=${KERN_NO_SSP_SOURCES:.c=.o}
 KERN_OBJECTS= 		${KERN_ASM_SOURCES:.asm=.o}					\
 					${KERN_C_SOURCES:.c=.o}
 
@@ -143,6 +156,8 @@ KERN_REAL_SOURCES=	$(KERN_ARCH_DIR)/utils/real/e820.real		\
 					$(KERN_ARCH_DIR)/utils/real/real_init.real
 
 KERN_REAL_BINS=		${KERN_REAL_SOURCES:.real=.bin}
+
+KERN_ALL_OBJECTS=$(KERN_OBJECTS) $(KERN_NO_SSP_OBJECTS)
 
 OS_IMAGE_NAME=arkon-$(VERSION)
 
@@ -162,6 +177,9 @@ CC_FLAGS=	$(CC_INCLUDE_DIRS) 		\
 			-mno-3dnow				\
 			-mno-red-zone			\
 			-mcmodel=kernel 		\
+			-fstack-protector-strong
+
+CC_FLAGS_NO_SSP= -fno-stack-protector
 
 ifeq ("$(KERN_PLATFORM)","x86_64")
 	KERN_ASM_PLATFORM=elf64
@@ -187,6 +205,7 @@ define write_kern_config_h
 	echo "#define LOG_TO_SERIAL $(KERN_LOG_TO_SERIAL)" >> $(KERN_INCLUDE_DIR)/conf.h
 	echo "#define KERN_LOAD_ADDR $(KERN_LOAD_ADDR)" >> $(KERN_INCLUDE_DIR)/conf.h
 	echo "#define KERN_VADDR $(KERN_VIRT_ADDR)" >> $(KERN_INCLUDE_DIR)/conf.h
+	echo "#define KERN_VERBOSITY $(KERN_VERBOSITY)" >> $(KERN_INCLUDE_DIR)/conf.h
 	echo "#endif /* _kern_conf_h */" >> $(KERN_INCLUDE_DIR)/conf.h
 endef
 
@@ -238,6 +257,7 @@ endef
 
 all: $(OS_IMAGE_NAME).bin
 
+$(KERN_NO_SSP_OBJECTS): CC_FLAGS += $(CC_FLAGS_NO_SSP)
 $(KERN_INCLUDE_DIR)/conf.h:
 	$(call write_kern_config_h)
 
@@ -262,13 +282,13 @@ boot.bin: bootloader/i386/boot.asm kernel.bin
 	$(call write_kern_info_asm)
 	$(call assemble_as_with_include,bin,bootloader/i386/,$<,$@)
 
-kernel.bin: $(KERN_REAL_BINS) $(KERN_INCLUDE_DIR)/conf.h bootloader/i386/kern_info.asm ${KERN_OBJECTS}
+kernel.bin: $(KERN_REAL_BINS) $(KERN_INCLUDE_DIR)/conf.h bootloader/i386/kern_info.asm ${KERN_OBJECTS} ${KERN_NO_SSP_OBJECTS}
 	$(call gen_kern_linker,binary)
-	$(call link_with_prefix,$(KERN_TOOL_PREFIX),$@,,KERN_OBJECTS,kernel.ld)
+	$(call link_with_prefix,$(KERN_TOOL_PREFIX),$@,,KERN_ALL_OBJECTS,kernel.ld)
 	
-kernel.elf: ${KERN_OBJECTS}
+kernel.elf: ${KERN_OBJECTS} ${KERN_NO_SSP_OBJECTS}
 	$(call gen_kern_linker,$(KERN_LD_PLATFORM))
-	$(call link_with_prefix,$(KERN_TOOL_PREFIX),$@,,KERN_OBJECTS,kernel.ld)
+	$(call link_with_prefix,$(KERN_TOOL_PREFIX),$@,,KERN_ALL_OBJECTS,kernel.ld)
 
 $(OS_IMAGE_NAME).bin: boot.bin kernel.bin
 	cat $^ > $@

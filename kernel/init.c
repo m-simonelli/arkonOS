@@ -16,6 +16,8 @@
 #include <mm/e820.h>
 #include <mm/pmm.h>
 
+extern unsigned long long *__stack_chk_guard;
+
 void kmain(int systime) {
     /* Initialize VGA */
     vga_init();
@@ -23,15 +25,8 @@ void kmain(int systime) {
     k_printf("Welcome to ArkonOS 0.3.0-alpha, compiled on %s at %s\n", __DATE__,
              __TIME__);
 
-    k_printf("Clocks since midnight: %d\n", systime);
-
     set_rand_algorithm(RAND_ALGORITHM_MT);
     srand(systime);
-    k_printf("Random value: %d\n", rand());
-    k_printf("Random value: %d\n", rand());
-    k_printf("Random value: %d\n", rand());
-    k_printf("Random value: %d\n", rand());
-    k_printf("Random value: %d\n", rand());
 
     /* Initalize serial I/O */
     serial_init();

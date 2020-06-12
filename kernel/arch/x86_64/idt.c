@@ -10,6 +10,7 @@
 #include <arch/x86_64/idt.h>
 #include <arch/x86_64/isr.h>
 #include <k_log.h>
+#include <conf.h>
 
 idt_descriptor_t idt_descriptor;
 idt_gate_entry_t idt_gates[IDT_ENTRIES] = {0};
@@ -69,12 +70,16 @@ void init_idt() {
     register_interrupt_handler(0x2e, irq14, 0, 0x8e);
     register_interrupt_handler(0x2f, irq15, 0, 0x8e);
 
-    kprintf("registered interrupt handlers\n");
+#if KERN_VERBOSITY >= 2
+    k_log("registered interrupt handlers\n");
+#endif 
 
     idt_descriptor_t idt_desc = {sizeof(idt_gates) - 1, (uint64_t)idt_gates};
 
     asm volatile("lidt %0" : : "m"(idt_desc));
     asm volatile("sti");
 
-    kprintf("loaded IDT\n");
+#if KERN_VERBOSITY >= 2
+    k_log("loaded IDT\n");
+#endif
 }
