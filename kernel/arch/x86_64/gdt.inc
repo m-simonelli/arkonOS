@@ -19,7 +19,7 @@ gdt:
 ; entry 0x8: k_code
 ; entry 0x10: k_data
 ; entry 0x16: rm_code
-; entry 0x20; rm_datas
+; entry 0x20; rm_data
 .kernel_code_64:
     dq (1<<43) | (1<<44) | (1<<47) | (1<<53) ; code segment
 
