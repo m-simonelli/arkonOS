@@ -15,7 +15,7 @@ gdt_code:
     dw 0x0          ; segment base
     db 0x0          ; segment base (cont., upper 8 bits, 16-23)
     db 10011010b    ; flags
-    db 11001111b    ; flags:4 + seg length upper 4 bits
+    db 11111100b    ; flags:4 + seg length upper 4 bits
     db 0x0          ; segment base (another upper 8 bits,24-31)
 
 gdt_data:
@@ -23,13 +23,13 @@ gdt_data:
     dw 0x0          ; segment base
     db 0x0          ; segment base (cont., upper 8 bits, 16-23)
     db 10010010b    ; flags
-    db 11001111b    ; flags:4 + seg length upper 4 bits
+    db 11111100b    ; flags:4 + seg length upper 4 bits
     db 0x0          ; segment base (another upper 8 bits,24-31)
 
 gdt_end:            ; for calculating size
 
 gdt_descriptor:
-    dw gdt_end - gdt_start - 1  ; size
+    dw gdt_end - gdt_start      ; size
     dd gdt_start                ; start addr
 
 CODE_SEG equ gdt_code - gdt_start
